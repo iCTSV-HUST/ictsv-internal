@@ -38,7 +38,7 @@ export type AuthSystemFields<T = never> = {
 
 export type AttendancesRecord = {
 	date: IsoDateString
-	member?: RecordIdString[]
+	members?: RecordIdString[]
 }
 
 export type DepartmentsRecord = {
@@ -48,16 +48,28 @@ export type DepartmentsRecord = {
 export type MembersRecord = {
 	active?: boolean
 	avatar?: string
-	department?: RecordIdString[]
+	department: RecordIdString[]
 	generation: number
 	name: string
 	role: RecordIdString
 	usercode: string
+
+	id: RecordIdString
 }
+
+type MembersExpand = {
+	expand: {
+		department: DepartmentsRecord[]
+		role: RolesRecord
+	}
+}
+
+export type MembersRequiredRecord = MembersRecord & MembersExpand;
 
 export type RolesRecord = {
 	codename: string
 	name: string
+	rank: number
 }
 
 // Response types include system fields and match responses from the PocketBase API
