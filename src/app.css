@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.dateinput > input[type="text"] {
+	@apply input input-bordered input-sm rounded-lg mt-2 w-fit;
+
+}
+
+.dateinput {
+	--date-picker-foreground: oklch(var(--bc));
+	--date-picker-background: oklch(var(--b1));
+	--date-picker-highlight-border: oklch(var(--a)); 
+/*		--date-picker-highlight-shadow:;*/
+	--date-picker-selected-color: oklch(var(--ac));
+	--date-picker-selected-background: oklch(var(--a) / 0.4);
+}
+
+
+/*.btn-animate {
+	transition-property: all;
+	transition-duration: 200ms;
+	transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+.btn-animate:hover {
+	transform: scale(1.05);
+}
+.btn-animate:active {
+	transform: scale(0.95);
+}*/
+
+
+
+
