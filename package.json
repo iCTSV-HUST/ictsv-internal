@@ -30,7 +30,9 @@
   },
   "type": "module",
   "dependencies": {
+    "dayjs": "^1.11.13",
     "lucide-svelte": "^0.441.0",
+    "ol": "^10.1.0",
     "pocketbase": "^0.21.5",
     "svelte-french-toast": "^1.2.0",
     "zod": "^3.23.8"
