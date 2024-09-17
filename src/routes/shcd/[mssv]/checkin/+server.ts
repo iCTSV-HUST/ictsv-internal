@@ -1,4 +1,4 @@
-import { USER_NAME, AID, TOKEN_CODE } from '$env/static/private';
+import { USER_MCODE, AID, TOKEN_CODE } from '$env/static/private';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			AId: AID,
 			Signature: "sample string 5",
 			TokenCode: TOKEN_CODE,
-			UserName: USER_NAME
+			UserName: USER_MCODE
 		});
 		
 		const response = await fetch('https://ctsv.hust.edu.vn/api-t/Activity/GetUserCheckInActivity', {

@@ -1,6 +1,6 @@
-import { USER_NAME, AID, TOKEN_CODE } from '$env/static/private';
+import { USER_MCODE, AID, TOKEN_CODE } from '$env/static/private';
 
-const imageURL = `https://ctsv.hust.edu.vn/api-t/UploadFile/CTSV/Download?UserName=${USER_NAME}&AId=${AID}&TokenCode=${TOKEN_CODE}&UserCode=`;
+const imageURL = `https://ctsv.hust.edu.vn/api-t/UploadFile/CTSV/Download?UserName=${USER_MCODE}&AId=${AID}&TokenCode=${TOKEN_CODE}&UserCode=`;
 
 
 import { error } from '@sveltejs/kit';
