@@ -1,4 +1,4 @@
-import { MYCODE, AID, TOKEN_CODE } from '$env/static/private';
+import { AID, MYCODE, TOKEN_CODE } from '$env/static/private';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
