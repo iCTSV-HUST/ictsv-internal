@@ -178,6 +178,7 @@
 <style>
   :global(body) {
     background: url("images/bg.png") center/cover;
+    height: 100vh;
   }
 
   .graying {
