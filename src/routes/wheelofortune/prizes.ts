@@ -9,13 +9,13 @@ export const prizesData = [
     text: "Snack",
     img: "images/Snack.png",
     number: 50,
-    percentage: 0.1
+    percentage: 0.05
   },
   {
     text: "Móc khóa",
     img: "images/Moc.png",
     number: 5,
-    percentage: 0.0099
+    percentage: 0.0049
   },
   {
     text: "Kẹo mút",
@@ -27,30 +27,30 @@ export const prizesData = [
     text: "Sổ tay cute",
     img: "images/So.png",
     number: 5,
-    percentage: 0.02 // 5%
+    percentage: 0.01 // 5%
   },
   {
     text: "Kẹo Oishi",
     img: "images/Oishi.png",
     number: 400,
-    percentage: 0.35
+    percentage: 0.40
   },
   {
     text: "Bánh Staff",
     img: "images/BanhStaff.png",
     number: 10,
-    percentage: 0.03
+    percentage: 0.015
   },
   {
     text: "Sa tế",
     img: "images/Sate.png",
     number: 15,
-    percentage: 0.04
+    percentage: 0.02
   },
   {
     text: "Chúc bạn may mắn",
     img: "images/miss.png",
     number: -1,
-    percentage: 0.3
+    percentage: 0.35
   },
 ];

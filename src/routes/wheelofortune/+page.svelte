@@ -33,6 +33,7 @@
     for (let prize of prizes) {
       sumWeight += prize.percentage;
       prize.cumWeight = sumWeight;
+      console.log(prize.text,":", Math.round(prize.cumWeight * 100000) / 100000);
     }    
   }
   updateCumWeight();
@@ -53,7 +54,7 @@
     const chosenRandom = Math.random() * sumWeight;
     let chosenIndex = prizes.length - 1;
 
-
+    console.log(Math.round(chosenRandom * 100000) / 100000);
     for (let i = 0; i < prizes.length; i++) {
       if (chosenRandom < (prizes[i].cumWeight ?? 100)) {
         chosenprize = prizes[i];
