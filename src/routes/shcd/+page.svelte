@@ -63,6 +63,10 @@
 			if (checkinResponse.ok) {
 				const checkinResult: { UserCheckInActivityLst: CheckinType[] } = await checkinResponse.json();
 
+				if (checkinResult.UserCheckInActivityLst.length === 0) {
+					toast.error("Không có checkin!");
+				}
+
 				checkinResult.UserCheckInActivityLst.forEach((checkin) => {
 					// const newObj: CheckinType = {
 					// 	time: checkin.CheckInTime,

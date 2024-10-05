@@ -30,7 +30,7 @@ export const authentication: Handle = async ({ event, resolve }) => {
 	return response;
 }
 
-const unprotectedPrefix = ['/login', '/home', '/shcd' ];
+const unprotectedPrefix = ['/login', '/home', '/shcd', '/wheelofortune' ];
 export const authorization: Handle = async ({ event, resolve }) => {
 
 	// Protect any routes that need authentication
