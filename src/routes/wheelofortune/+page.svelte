@@ -162,7 +162,7 @@
 <Modal bind:showModal>
   {#if chosenprize?.number > -1}
     <div class="flex justify-center items-center">
-      <img src={chosenprize?.img} class="w-60 h-60 object-contain block" alt="prize"/>
+      <img src={images[chosenprize?.img]} class="w-60 h-60 object-contain block" alt="prize"/>
     </div>
     <h2 class="text-4xl font-bold text-gray-700 mt-4 mb-2">Chúc mừng!</h2>
     <h3 class="text-xl font-semibold text-gray-600 ">Bạn đã trúng {chosenprize?.text}</h3> 
