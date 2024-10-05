@@ -8,9 +8,12 @@
     percentage: number;
     cumWeight?: number;
   }
-  import { prizesData } from './prizes';
-  console.log(prizesData);
-  let prizes: Prize[] = prizesData;
+  // import { prizesData } from './prizes';
+  // console.log(prizesData);
+
+  export let data;
+
+  let prizes: Prize[] = data.data;
   
 
   const badResults = [
