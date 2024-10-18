@@ -17,6 +17,10 @@ export const load: LayoutLoad = async ({ url, fetch }) => {
 		pb.authStore.clear();
 		redirect(302, '/login?message=Error logging in');
 	}
+
+	return {
+		message: url.searchParams.get('message'),
+	}
 }
 
 export const ssr = false;

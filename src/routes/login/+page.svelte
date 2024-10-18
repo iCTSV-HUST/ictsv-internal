@@ -12,6 +12,22 @@
 	import KeyIcon from 'lucide-svelte/icons/key-round';
 	import InputLabel from './InputLabel.svelte';
 
+	const { data } = $props();
+
+	if (data.positive) {
+		toast.success(data.message);
+	} else {
+		toast.error(data.message);
+	}
+	
+
+	$inspect(data);
+
+	$effect(() => {
+		console.log(data.message);
+		
+	});
+
 	let loading = $state(false);
 
 	let form = $state({
@@ -42,7 +58,7 @@
 				.collection("members")
 				.authWithPassword(formData.email.toLowerCase(), formData.password);
 
-			goto('/app?message="logged in successfully"');
+			goto('/app?message=Logged in successfully');
 		} catch (e) {
 			const err = e as ClientResponseError;
 			console.log("Error: ", err);

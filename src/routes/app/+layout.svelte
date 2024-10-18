@@ -1,6 +1,7 @@
 <script lang='ts'>
 	import type { ClientResponseError } from "pocketbase";
 	import { appData, refreshAppData } from "$lib/appimportant.svelte";
+    import { logout } from "$lib/pocketbase";
 	import toast from "svelte-french-toast";
 
 	// Get data once
@@ -17,13 +18,10 @@
 		});
 	}
 
-	import type { Snippet } from "svelte";
 	import { page } from '$app/stores';
 
-	const { children }: {
-		children: Snippet;
-	} = $props();
-
+	const { data, children } = $props();
+	toast.success(data.message);
 
 
 	import CheckIcon from 'lucide-svelte/icons/circle-check-big';
@@ -56,6 +54,11 @@
 					</a></li>
 						
 				{/each}
+
+				<li><button class="hover:bg-error w-full"
+					onclick={logout}>
+					Logout
+				</button></li>
 			</ul>
 		</nav>
 	</aside>
@@ -69,7 +72,7 @@
 
 
 <style>
-	.navigation-sidebar li a {
+	.navigation-sidebar li a,button {
 		display: block;
 		border-radius: 0.75rem;
 		padding: 0.5rem 1rem;        /* Padding inside menu items */
