@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import { appData, type MembersInfo } from "$lib/appimportant.svelte";
-    import DepartmentDisplay from "./DepartmentDisplay.svelte";
+	import DepartmentDisplay from "./DepartmentDisplay.svelte";
 
 	let memberList = $state<MembersInfo[]>([]);
 

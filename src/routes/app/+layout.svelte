@@ -17,8 +17,6 @@
 		});
 	}
 
-$inspect(appData.members);
-
 	import type { Snippet } from "svelte";
 	import { page } from '$app/stores';
 

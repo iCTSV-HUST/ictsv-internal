@@ -1,6 +1,15 @@
-// place files you want to import through the `$lib` alias in this folder.
-import type { AttendancesRecord, MembersRequiredRecord, RecordIdString } from '$lib/pocketbase-types';
+// Global store
+
+import type { AttendancesRecord, IsoDateString, MembersRequiredRecord, RecordIdString } from '$lib/pocketbase-types';
 import { pb } from '$lib/pocketbase';
+
+
+export type AttendancesInfo = {
+	date: IsoDateString;
+	members?: RecordIdString[];
+
+	id: RecordIdString;
+}
 
 export type MembersInfo = {
 	active: boolean;
@@ -18,7 +27,7 @@ export type MembersInfo = {
 
 type MemberDataType = {
 	members: MembersInfo[];
-	attendances: AttendancesRecord[];
+	attendances: AttendancesInfo[];
 }
 
 export const appData = $state<MemberDataType>({
@@ -52,9 +61,9 @@ export async function refreshAppData() {
 	});
 
 	const attendances = await pb.collection('attendances').getFullList<AttendancesRecord>({
-		sort: '-created',
-		fields: 'date,members'
-	})
+		sort: '+date',
+		fields: 'id,date,members'
+	});
 
 	appData.attendances = attendances;
 }

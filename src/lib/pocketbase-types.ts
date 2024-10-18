@@ -39,6 +39,8 @@ export type AuthSystemFields<T = never> = {
 export type AttendancesRecord = {
 	date: IsoDateString
 	members?: RecordIdString[]
+
+	id: RecordIdString
 }
 
 export type DepartmentsRecord = {

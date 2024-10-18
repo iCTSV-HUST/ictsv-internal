@@ -1,25 +1,31 @@
 <script lang='ts'>
-	const { depts }: {
+	const { depts, short = false }: {
 		depts: string[];
+		short?: boolean;
 	} = $props();
 
-	type StringMap = { [key: string]: string };
+	type StringMap = { [key: string]: { class: string; short: string } };
 
-	const classMatcher: StringMap = {
-		"Mảng Kiểm duyệt": "badge-success",
-		"Mảng Truyền thông": "badge-secondary",
-		"Mảng Sự kiện": "badge-accent",
-		"Mảng Hậu cần": "badge-primary",
-		"Tiểu ban": "badge-info"
+	const deptMatcher: StringMap = {
+		"Mảng Kiểm duyệt":   { class: "badge-success",   short: "KD" },
+		"Mảng Truyền thông": { class: "badge-secondary", short: "TT" },
+		"Mảng Sự kiện":      { class: "badge-accent",    short: "SK" },
+		"Mảng Hậu cần":      { class: "badge-primary",   short: "HC" },
+		"Tiểu ban":          { class: "badge-info",      short: "TB" },
 	}
 
 	function getClass(dept: string) {
-		return classMatcher[dept] || "";
+		return deptMatcher[dept].class || "";
+	}
+
+	function getName(dept: string) {
+		if (!short) return dept;
+		return deptMatcher[dept].short || "";
 	}
 </script>
 
 
-<span class={"badge " + getClass(depts[0])}>{depts[0]}</span>
+<span class={"badge " + getClass(depts[0])}>{getName(depts[0])}</span>
 {#if depts[1]}
-	<span class={"badge " + getClass(depts[1])}>{depts[1]}</span>
+	<span class={"badge " + getClass(depts[1])}>{getName(depts[1])}</span>
 {/if}

@@ -1,131 +1,163 @@
 <script lang='ts'>
-    import type { AttendancesRecord, MembersRecord } from '$lib/pocketbase-types';
-    import type { PageServerData} from './$types';
+	import { appData } from "$lib/appimportant.svelte";
+    import dayjs from "dayjs";
+    import DepartmentDisplay from "../DepartmentDisplay.svelte";
 
-	import toast from 'svelte-french-toast';
+    import { checkAttendance, checkStreak, createAttendance, deleteAttendance, saveAttendance } from "./api-attendance";
 
-	let { data }: { 
-		data: PageServerData;
-	} = $props();
+	let endTable = $state<HTMLDivElement>();
+	let deleteMode = $state(false);
+	let loadOnce = false;
 
-	type IdMap = { [key: string]: boolean };
-	type AttendanceDay = {
-		date: string,
-		members: IdMap
-	};
+	$effect(() => {
+		if (appData.attendances.length > 0 && !loadOnce) {
+			loadOnce = true;
+			setTimeout(() => {
+				endTable?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+			}, 100);
+		
+		}
+	});
 
-	let memberList = $state<MembersRecord[]>([]);
-	let attendanceList = $state<AttendancesRecord[]>([]);
 
-	async function getAttendances(data: PageServerData) {
-		if (data) {
-			const members = await data.promises.members;
-			attendanceList = await data.promises.attendances;
-
-			memberList = members.map(({ expand, ...rest }) => {
-				return {
-					...rest,
-					role: expand.role.name,
-					rank: expand.role.rank,
-					department: expand.department.map(dept => dept.name),
-				}
-			}).sort((a,b) => {
-				return a.department[0].localeCompare(b.department[0])
-					|| a.rank - b.rank
-					|| a.generation - b.generation
-					|| a.name.localeCompare(b.name);
-			});
-
-			// 
-
-			// const memberToIndexMap = memberList.reduce<IdToIndexMap>((acc, member, index) => {
-			// 	acc[member.id] = index;
-			// 	return acc;
-			// }, {});
-			//console.log(attendances);
-
-			// attendanceList = attendances.map<AttendanceDay>((att) => {
-			// 	const day: AttendanceDay = {
-			// 		date: att.date,
-			// 		members: att.members.reduce<IdMap>((acc, memberid) => {
-			// 			acc[memberid] = true;
-			// 			return acc;
-			// 		}, {})
-			// 	}
-
-			// 	return day;
-			// });
-		}	
-	}
-
-	// $inspect(memberList);
-	$inspect(attendanceList)
-
-	async function toastLoader(promise: Promise<unknown>) {
-		toast.promise( promise, {
-			loading: 'Loading...',
-			success: 'Loaded!',
-			error: (e) => {console.log(e); return e.message; },
-		});
-	}
-
-	function checkAttendance(index: number, id: string) {
-		return attendanceList[index]?.members?.includes(id) ?? false;
-	}
-
-	function getRoundedClass(index: number, id: string) {
-		if (!checkAttendance(index, id)) return "";
-		let str = "";
-		if (checkAttendance(index-1, id)) { str += " rounded-l-none"; }
-		if (checkAttendance(index+1, id)) { str += " rounded-r-none"; }
-		return str;
-	}
-
-	import DepartmentDisplay from './DepartmentDisplay.svelte';
 </script>
 
 
+<div class="h-full flex flex-col">
 
+<h3 class="ml-4 mb-2 text-2xl font-semibold">Điểm danh</h3>
 
-
-
-{#await toastLoader(getAttendances(data))}
-	<span class="loading loading-ring loading-sm"></span>
-{:then}
-
-<table class="table table-sm m-8">
+<div class="border-2 border-neutral rounded-xl mx-8 overflow-scroll" style="width: 80vw;">
+<table class="table table-sm table-pin-rows border-separate border-spacing-0" >
 	<thead>
-		<tr>
-			<th>Tên</th>
-			<th>Mảng</th>
-			<th>
-			{#each attendanceList as day, index (index)}
-				{day.date}
+		<tr class="text-sm bg-base-300 z-[3]">
+			<th class="stt-cell bg-base-300">STT</th>
+			<th class="name-cell bg-base-300">
+				<div class="flex justify-between">
+					<span>Tên</span>
+					<span>Mảng</span>				
+				</div>
+			</th>
+
+			{#each appData.attendances as day, index (day.id)}
+				<th class="p-0 text-center relative">
+					{#if deleteMode}
+						<button onclick={() => deleteAttendance(index)}
+							class="absolute top-0 left-0 w-full h-full hover:bg-error/50">
+							{dayjs(day.date).format('DD/MM')}
+						</button>
+					{:else}
+						{dayjs(day.date).format('DD/MM')}
+					{/if}
+				</th>
 			{/each}
+
+			<th class="p-0">
+				<button onclick={() => createAttendance()}
+					style="min-width: var(--check-w);"
+					class="py-1 h-full w-full hover:bg-primary/50 text-2xl">
+					+
+				</button>
+			</th>
+
+			<th class="p-0 relative">
+				<button onclick={() => deleteMode = !deleteMode} 
+					class:bg-error={deleteMode}
+					class="absolute p-3 top-0 h-full hover:bg-error/50">
+					Xoá
+				</button>
+				<div bind:this={endTable} style="width: var(--padded-w);"></div>
 			</th>
 		</tr>
 	</thead>
 	<tbody>
-		{#each memberList as member (member.id)}
+		
+			{#each appData.members as member, stt (member.id)}
 			<tr>
-				<td>{member.name}</td>
-				<td><DepartmentDisplay depts={member.department} /></td>
-				<td>
-					{#each attendanceList as day, index (index)}
-						<input type="checkbox" 
-							checked={checkAttendance(index, member.id)}
-							value={member.id}
-							bind:group={attendanceList[index].members}
-							class={"checkbox checkbox-success rounded-full" + getRoundedClass(index, member.id)} />
+				<td class="stt-cell bg-base-100">{stt + 1}</td>
+				<td class="name-cell bg-base-100">
+					<div style="min-width: var(--name-w);" class="flex justify-between">
+						{member.name}
+						<span><DepartmentDisplay depts={member.department} short={true}/></span>					
+					</div>
 
-					{/each}
 				</td>
+
+				{#each appData.attendances as day, index (day.id)}
+					<td class="p-0">
+						<div style="min-width: var(--check-w);" class="relative flex items-center justify-center">
+							<input type="checkbox" 
+								checked={checkAttendance(index, member.id)}
+								value={member.id}
+								bind:group={appData.attendances[index].members}
+								class="checkbox checkbox-success rounded-full steps "
+								class:steps={checkStreak(index, member.id)}
+
+								onclick={() => { saveAttendance(index) }}
+								/>
+						</div>
+					</td>						
+				{/each}
+
+				<td></td>
+				<td></td>
 			</tr>
-		{/each}
+			{/each}
 	</tbody>
 </table>
+</div>
 
-{:catch error}
-	<p style="color: red">{error.message}</p>
-{/await}
+</div>
 
+<style>
+	table {
+		--stt-w: 1rem;
+		--name-w: 17rem;
+		--check-w: 3rem;
+		/*	- 4rem to align the cell */
+		--padded-w: calc(80vw - var(--stt-w) - var(--name-w) - var(--check-w) * 4 - 4rem);
+	}
+	table tbody td {
+		border-left: 1px solid oklch(var(--b2));
+		border-bottom: 1px solid oklch(var(--b2));
+	}
+
+	table thead th {
+		border-left: 1px solid oklch(var(--nc));
+	}
+
+	.name-cell {
+		border-right: 2px solid oklch(var(--nc));
+
+		position: sticky;
+		left: calc(var(--stt-w) + 1rem + 1px);
+		z-index: 2;
+	}
+
+	.stt-cell {
+		position: sticky;
+		left: 0px;
+		z-index: 2;
+
+		min-width: var(--stt-w);
+		padding-left: 0.25rem;
+		padding-right: 0.25rem;
+		text-align: center;
+	}
+
+	@keyframes fadeIn {   0% { opacity: 0; }   100% { opacity: 1; } }
+	.steps {
+		z-index: 1;
+	}
+	.steps::after {
+	    content: '';
+	    position: absolute;
+	    left: calc(-50% + 0.5rem - 1px);	/* - checkbox_size + border */
+	    top: calc(50% - 0.25rem);			/* - height/2 */
+	    width: calc(100% - 1rem + 1px);	/* - checkbox_size + border */
+	    height: 0.5rem;
+	    background-color: oklch(var(--su));
+	    z-index: 0;
+	    animation: fadeIn 0.5s;
+	  }
+</style>
