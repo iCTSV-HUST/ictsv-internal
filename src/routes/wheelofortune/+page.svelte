@@ -11,6 +11,7 @@
   // import { prizesData } from './prizes';
   // console.log(prizesData);
 
+
   export let data;
 
   let prizes: Prize[] = data.data;
@@ -125,6 +126,7 @@
     "images/miss.png": missImg
   };
   import Modal from './Modal.svelte';
+
 </script>
 
 

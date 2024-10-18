@@ -1,12 +1,12 @@
 import type { ClientResponseError } from 'pocketbase';
-import type { Actions, PageServerLoad } from './$types';
+import type { PageLoad } from './$types';
 import type { AttendancesRecord, MembersRequiredRecord } from '$lib/pocketbase-types';
 
 import { error } from '@sveltejs/kit';
 
+import { pb } from '$lib/pocketbase';
 
-
-export const load: PageServerLoad = async ({ locals: { pb } }) =>  {
+export const load: PageLoad = async () =>  {
 	try {
 		console.log("---attendance-check: ");
 		const members = pb.collection('members').getFullList<MembersRequiredRecord>({
@@ -34,15 +34,15 @@ export const load: PageServerLoad = async ({ locals: { pb } }) =>  {
 	}
 }
 
-export const actions: Actions  = {
-	test: async ({ request, locals: { pb } }) => {
-		const data = {
-		    "date": "2022-01-01 10:00:00.123Z",
-		    "members": [
-		        "RELATION_RECORD_ID"
-		    ]
-		};
+// export const actions: Actions  = {
+// 	test: async ({ request, locals: { pb } }) => {
+// 		const data = {
+// 		    "date": "2022-01-01 10:00:00.123Z",
+// 		    "members": [
+// 		        "RELATION_RECORD_ID"
+// 		    ]
+// 		};
 
-		const record = await pb.collection('attendances').create(data);
-	},
-};
+// 		const record = await pb.collection('attendances').create(data);
+// 	},
+// };

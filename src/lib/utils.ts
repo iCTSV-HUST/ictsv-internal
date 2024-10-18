@@ -1,6 +1,6 @@
-export const validateData = async (formData, schema) => {
-	const body = Object.fromEntries(formData);
+import type { ZodError, ZodType } from "zod";
 
+export const validateData = async (body: unknown, schema: ZodType ) => {
 	try {
 		const data = schema.parse(body);
 		return {
@@ -9,7 +9,8 @@ export const validateData = async (formData, schema) => {
 		};
 	} catch (err) {
 		console.log('Error: ', err);
-		const errors = err.flatten();
+		const errors = (err as ZodError).flatten();
+
 		return {
 			formData: body,
 			errors

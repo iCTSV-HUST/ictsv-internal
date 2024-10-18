@@ -28,7 +28,7 @@
 					role: expand.role.name,
 					rank: expand.role.rank,
 					department: expand.department.map(dept => dept.name),
-				} 
+				}
 			}).sort((a,b) => {
 				return a.department[0].localeCompare(b.department[0])
 					|| a.rank - b.rank

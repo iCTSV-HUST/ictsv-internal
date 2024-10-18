@@ -1,9 +1,14 @@
 <script lang='ts'>
 	export let showModal: boolean;
 
-	let dialog: HTMLDialogElement
+	let dialog: HTMLDialogElement;
 
-	$: if (dialog && showModal) dialog.showModal();
+
+	import JSConfetti from 'js-confetti';
+
+	const jsConfetti = new JSConfetti();
+
+	$: if (dialog && showModal) { dialog.showModal(); jsConfetti.addConfetti(); };
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
@@ -16,7 +21,7 @@
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div on:click|stopPropagation>
 		<slot />
-
+		{jsConfetti.addConfetti()}
 		<!-- svelte-ignore a11y-autofocus -->
 		<!-- <button autofocus on:click={() => dialog.close()}>close modal</button> -->
 	</div>
