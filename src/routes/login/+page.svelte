@@ -14,10 +14,12 @@
 
 	const { data } = $props();
 
-	if (data.positive) {
-		toast.success(data.message);
-	} else {
-		toast.error(data.message);
+	if (data.message) {
+		if (data.positive) {
+			toast.success(data.message);
+		} else {
+			toast.error(data.message);
+		}		
 	}
 	
 

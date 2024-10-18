@@ -21,7 +21,8 @@
 	import { page } from '$app/stores';
 
 	const { data, children } = $props();
-	toast.success(data.message);
+	
+	if (data.message) { toast.success(data.message) }
 
 
 	import CheckIcon from 'lucide-svelte/icons/circle-check-big';
