@@ -4,6 +4,7 @@
     import DepartmentDisplay from "../DepartmentDisplay.svelte";
 
     import { checkAttendance, checkStreak, createAttendance, deleteAttendance, saveAttendance } from "./api-attendance";
+    import { download } from "$lib/utils";
 
 	let endTable = $state<HTMLDivElement>();
 	let deleteMode = $state(false);
@@ -19,13 +20,31 @@
 		}
 	});
 
+	function exportAttendanceCSV() {
+		let buffer = 'STT,Tên,MSSV,' 
+			+ appData.attendances.map(day => "DD " + dayjs(day.date).format('DD/MM')).join(',') + '\n';
 
+		for (const [index, member] of appData.members.entries()) {
+			buffer += `${index+1},${member.name},${member.usercode},`;
+			buffer += appData.attendances.map(day => day.members?.includes(member.id) ? 1 : 0).join(',');
+			buffer += '\n';
+		}
+
+		download("attendances.csv", buffer);
+	}
+
+	import DownloadIcon from 'lucide-svelte/icons/download';
 </script>
 
 
 <div class="h-full flex flex-col">
 
-<h3 class="ml-4 mb-2 text-2xl font-semibold">Điểm danh</h3>
+<div class="flex gap-2">
+	<h3 class="ml-4 mb-2 text-2xl font-semibold">Điểm danh</h3>
+	<button class="btn btn-sm bg-base-100 border-0" onclick={exportAttendanceCSV}>
+		<DownloadIcon />	
+	</button>
+</div>
 
 <div class="border-2 border-neutral rounded-xl mx-8 overflow-scroll" style="width: 80vw;">
 <table class="table table-sm table-pin-rows border-separate border-spacing-0" >
@@ -42,6 +61,7 @@
 			{#each appData.attendances as day, index (day.id)}
 				<th class="p-0 text-center relative">
 					{#if deleteMode}
+						<!-- TODO: Make this a checkbox instead, so when clicking the Delete/Xoa button, we can select multiple days to delete at once (this also reduce chance of misclick) -->
 						<button onclick={() => deleteAttendance(index)}
 							class="absolute top-0 left-0 w-full h-full hover:bg-error/50">
 							{dayjs(day.date).format('DD/MM')}
