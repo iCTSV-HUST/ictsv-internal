@@ -53,7 +53,7 @@ export async function createAttendance() {
 	appData.attendances.push(newAttendance);
 }
 
-export async function deleteAttendance(dayIndex: number) {
+export function deleteAttendance(dayIndex: number) {
 	if (!appData.attendances[dayIndex]) return;
 
 	toastSavePromise(
@@ -61,4 +61,14 @@ export async function deleteAttendance(dayIndex: number) {
 	)
 
 	appData.attendances.splice(dayIndex, 1); // Remove 1 element at the found index
+}
+
+export function lockAttendance(dayIndex: number, status: boolean) {
+	if (!appData.attendances[dayIndex]) return;
+
+	toastSavePromise(
+		pb.collection('attendances').update(appData.attendances[dayIndex].id, { locked: status })
+	)
+
+	appData.attendances[dayIndex].locked = status; // Remove 1 element at the found index
 }

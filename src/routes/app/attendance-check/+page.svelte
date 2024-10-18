@@ -3,11 +3,16 @@
     import dayjs from "dayjs";
     import DepartmentDisplay from "../DepartmentDisplay.svelte";
 
-    import { checkAttendance, checkStreak, createAttendance, deleteAttendance, saveAttendance } from "./api-attendance";
+    import { checkAttendance, checkStreak, createAttendance, deleteAttendance, saveAttendance, lockAttendance } from "./api-attendance";
     import { download } from "$lib/utils";
 
 	let endTable = $state<HTMLDivElement>();
-	let deleteMode = $state(false);
+
+	const DELETE_MODE = 1;
+	const LOCK_MODE = 2;
+
+	let usingMode = $state(0);
+
 	let loadOnce = false;
 
 	$effect(() => {
@@ -60,10 +65,16 @@
 
 			{#each appData.attendances as day, index (day.id)}
 				<th class="p-0 text-center relative">
-					{#if deleteMode}
+					{#if usingMode === DELETE_MODE}
 						<!-- TODO: Make this a checkbox instead, so when clicking the Delete/Xoa button, we can select multiple days to delete at once (this also reduce chance of misclick) -->
 						<button onclick={() => deleteAttendance(index)}
 							class="absolute top-0 left-0 w-full h-full hover:bg-error/50">
+							{dayjs(day.date).format('DD/MM')}
+						</button>
+					{:else if usingMode === LOCK_MODE}
+						<button onclick={() => lockAttendance(index, !day.locked)}
+							class="absolute top-0 left-0 w-full h-full hover:bg-warning/50"
+							class:bg-warning={day.locked}>
 							{dayjs(day.date).format('DD/MM')}
 						</button>
 					{:else}
@@ -81,11 +92,19 @@
 			</th>
 
 			<th class="p-0 relative">
-				<button onclick={() => deleteMode = !deleteMode} 
-					class:bg-error={deleteMode}
-					class="absolute p-3 top-0 h-full hover:bg-error/50">
-					Xoá
-				</button>
+				<div class="absolute top-0 h-full">
+					<button onclick={() => usingMode = usingMode === 0 ? DELETE_MODE : 0} 
+						class:bg-error={usingMode === DELETE_MODE}
+						class="p-3 h-full hover:bg-error/50">
+						Xoá
+					</button>
+
+					<button onclick={() => usingMode = usingMode === 0 ? LOCK_MODE : 0} 
+						class:bg-warning={usingMode === LOCK_MODE}
+						class="p-3 h-full hover:bg-warning/50">
+						Khoá chỉnh sửa
+					</button>
+				</div>
 				<div bind:this={endTable} style="width: var(--padded-w);"></div>
 			</th>
 		</tr>
@@ -110,10 +129,12 @@
 								checked={checkAttendance(index, member.id)}
 								value={member.id}
 								bind:group={appData.attendances[index].members}
-								class="checkbox checkbox-success rounded-full steps "
+								class="checkbox checkbox-success rounded-full steps "								
 								class:steps={checkStreak(index, member.id)}
 
-								onclick={() => { saveAttendance(index) }}
+								class:checkbox-locked={day.locked}
+								disabled={day.locked}
+								onclick={() => { if (!day.locked) { saveAttendance(index); } }}
 								/>
 						</div>
 					</td>						
@@ -165,6 +186,10 @@
 		text-align: center;
 	}
 
+	.checkbox-locked:checked {
+		opacity: 1;
+	}
+
 	@keyframes fadeIn {   0% { opacity: 0; }   100% { opacity: 1; } }
 	.steps {
 		z-index: 1;
@@ -176,8 +201,9 @@
 	    top: calc(50% - 0.25rem);			/* - height/2 */
 	    width: calc(100% - 1rem + 1px);	/* - checkbox_size + border */
 	    height: 0.5rem;
+
 	    background-color: oklch(var(--su));
 	    z-index: 0;
 	    animation: fadeIn 0.5s;
-	  }
+	}
 </style>

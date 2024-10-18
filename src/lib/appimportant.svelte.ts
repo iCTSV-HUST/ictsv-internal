@@ -8,6 +8,7 @@ export type AttendancesInfo = {
 	date: IsoDateString;
 	members?: RecordIdString[];
 
+	locked: boolean;
 	id: RecordIdString;
 }
 
@@ -60,9 +61,9 @@ export async function refreshAppData() {
 		}
 	});
 
-	const attendances = await pb.collection('attendances').getFullList<AttendancesRecord>({
+	const attendances = await pb.collection('attendances').getFullList<AttendancesInfo>({
 		sort: '+date',
-		fields: 'id,date,members'
+		fields: 'id,date,members,locked'
 	});
 
 	appData.attendances = attendances;
