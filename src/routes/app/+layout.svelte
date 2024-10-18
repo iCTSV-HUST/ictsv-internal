@@ -11,6 +11,7 @@
 			success: "Loaded!",
 			error: e => { 
 				const err = e as ClientResponseError;
+				console.log(err);
 				return err.message;
 			},
 		});
@@ -25,12 +26,16 @@ $inspect(appData.members);
 		children: Snippet;
 	} = $props();
 
-	const navList = [
-		{ name: "Trang chủ", route: "/app"}, 
-		{ name: "Điểm danh", route: "/app/attendance-check"},
-		{ name: "Tài khoản", route: "/app/profile"},
-	]
 
+
+	import CheckIcon from 'lucide-svelte/icons/circle-check-big';
+	import UserIcon from 'lucide-svelte/icons/user';
+
+	const navList = [
+		{ name: "Trang chủ", icon: null, route: "/app"}, 
+		{ name: "Điểm danh", icon: CheckIcon, route: "/app/attendance-check"},
+		{ name: "Tài khoản", icon: UserIcon, route: "/app/profile"},
+	]
 </script>
 
 
@@ -43,16 +48,22 @@ $inspect(appData.members);
 		<nav class="navigation-sidebar p-4">
 			<ul class="flex flex-col gap-2">
 				{#each navList as nav}
-					<li>
-						<a class:bg-primary={$page.url.pathname === nav.route} href={nav.route}>{nav.name}</a>
-					</li>
+					<li><a class:bg-primary={$page.url.pathname === nav.route} href={nav.route}>
+						<div class="flex gap-2 items-center">
+							{#if nav.icon != null}
+								<nav.icon size="1.25em"/>
+							{/if}
+							{nav.name}
+						</div>
+					</a></li>
+						
 				{/each}
 			</ul>
 		</nav>
 	</aside>
 
 	<!-- Main content -->
-	<div class="flex-1 bg-base-100 p-8">
+	<div class="flex-1 h-screen bg-base-100 p-4">
 		{@render children()}
 	</div>
 </div>

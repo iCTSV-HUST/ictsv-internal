@@ -29,7 +29,7 @@ export const appData = $state<MemberDataType>({
 
 export async function refreshAppData() {
 	const members = await pb.collection('members').getFullList<MembersRequiredRecord>({
-		sort: '-created',
+		sort: '-sort_override,-department.name,+role.rank,+generation',
 		expand: 'department,role',
 		fields: 'id,name,usercode,expand.department.name,expand.role.name,expand.role.rank,generation',
 		filter: 'active = true',

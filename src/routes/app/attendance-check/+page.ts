@@ -9,18 +9,7 @@ import { pb } from '$lib/pocketbase';
 export const load: PageLoad = async () =>  {
 	try {
 		console.log("---attendance-check: ");
-		const members = pb.collection('members').getFullList<MembersRequiredRecord>({
-			sort: '-created',
-			expand: 'department,role',
-			fields: 'id,name,usercode,expand.department.name,expand.role.name,expand.role.rank,generation',
-			filter: 'active = true',
 
-		});
-
-		const attendances = pb.collection('attendances').getFullList<AttendancesRecord>({
-			sort: '-created',
-			fields: 'date,members'
-		})
 
 		return {
 			promises: {

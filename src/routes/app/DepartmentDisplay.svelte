@@ -8,8 +8,8 @@
 	const classMatcher: StringMap = {
 		"Mảng Kiểm duyệt": "badge-success",
 		"Mảng Truyền thông": "badge-secondary",
-		"Mảng Sự kiện": "badge-primary",
-		"Mảng Hậu cần": "badge-accent",
+		"Mảng Sự kiện": "badge-accent",
+		"Mảng Hậu cần": "badge-primary",
 		"Tiểu ban": "badge-info"
 	}
 
