@@ -1,8 +1,8 @@
 <script lang='ts'>
-	import { appData, type MembersInfo } from "$lib/appimportant.svelte";
+	import { appData, type MemberInfo } from "$lib/appimportant.svelte";
 	import DepartmentDisplay from "./DepartmentDisplay.svelte";
 
-	let memberList = $state<MembersInfo[]>([]);
+	let memberList = $state<MemberInfo[]>([]);
 
 	$effect(() => {
 		memberList = [...appData.members];

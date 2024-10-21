@@ -4,10 +4,14 @@
     import { logout } from "$lib/pocketbase";
 	import toast from "svelte-french-toast";
 
+	import { page } from '$app/stores';
+
+	const { data, children } = $props();
+
 	// Get data once
 	if (appData.members.length === 0) {
 		toast.promise(
-			refreshAppData(), {
+			refreshAppData(data.userId), {
 			loading: "Loading...",
 			success: "Loaded!",
 			error: e => { 
@@ -17,10 +21,6 @@
 			},
 		});
 	}
-
-	import { page } from '$app/stores';
-
-	const { data, children } = $props();
 	
 	if (data.message) { toast.success(data.message) }
 
@@ -58,7 +58,7 @@
 
 				<li><button class="hover:bg-error w-full"
 					onclick={logout}>
-					Logout
+					Đăng xuất
 				</button></li>
 			</ul>
 		</nav>
