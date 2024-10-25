@@ -12,9 +12,8 @@
   // console.log(prizesData);
 
 
-  export let data;
 
-  let prizes: Prize[] = data.data;
+  let prizes: Prize[] = $state(data.data);
   
 
   const badResults = [
@@ -27,7 +26,7 @@
     return badResults[Math.floor(Math.random() * badResults.length)];
   }
 
-  let wheel: HTMLUListElement;
+  let wheel: HTMLUListElement = $state();
   let animation: Animation;
   let previousEndDegree = 0;
 
@@ -44,9 +43,9 @@
 
   console.log(sumWeight);
 
-  let showModal = true;
-  let spinDisabled = false;
-  let chosenprize: Prize;
+  let showModal = $state(true);
+  let spinDisabled = $state(false);
+  let chosenprize: Prize = $state();
 
   function spinWheel() {
     if (animation) {
@@ -126,6 +125,11 @@
     "images/miss.png": missImg
   };
   import Modal from './Modal.svelte';
+  interface Props {
+    data: any;
+  }
+
+  let { data }: Props = $props();
 
 </script>
 
@@ -156,7 +160,7 @@
       <g id="SVGRepo_iconCarrier"> <path d="M0 0h48v48H0z" fill="none"/> <g id="Shopicon"> <path d="M24,44c0,0,14-12,14-26c0-7.732-6.268-14-14-14s-14,6.268-14,14C10,32,24,44,24,44z M24,16c1.105,0,2,0.895,2,2 c0,1.105-0.895,2-2,2c-1.105,0-2-0.895-2-2C22,16.895,22.895,16,24,16z" /> </g> </g>
     </svg>
 
-    <button class="w-16 h-16 rounded-full z-10 bg-[#e44025] text-white font-bold" on:click={spinWheel}
+    <button class="w-16 h-16 rounded-full z-10 bg-[#e44025] text-white font-bold" onclick={spinWheel}
       disabled={spinDisabled}>
       Quay
     </button>  
