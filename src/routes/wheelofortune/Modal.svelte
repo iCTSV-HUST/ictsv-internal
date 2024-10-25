@@ -1,28 +1,41 @@
 <script lang='ts'>
-	export let showModal: boolean;
+	import { run } from 'svelte/legacy';
 
-	let dialog: HTMLDialogElement;
+
+	let dialog: HTMLDialogElement = $state();
 
 
 	import JSConfetti from 'js-confetti';
+	interface Props {
+		showModal: boolean;
+		onclick?: (event: any) => void;
+		children?: import('svelte').Snippet;
+	}
+
+	let { showModal = $bindable(), onclick, children }: Props = $props();
 
 	const jsConfetti = new JSConfetti();
 
-	$: if (dialog && showModal) { dialog.showModal(); jsConfetti.addConfetti(); };
+	run(() => {
+		if (dialog && showModal) { dialog.showModal(); jsConfetti.addConfetti(); }
+	});;
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
 <dialog class="bg-[#fadad4] flex flex-col items-center justify-center"
 	class:hidden={!showModal}
 	bind:this={dialog}
-	on:close={() => (showModal = false)}
-	on:click|self={() => dialog.close()}
+	onclose={() => (showModal = false)}
+	onclick={(event) => {
+		// @migration-task: incorporate self modifier
+		dialog.close()
+	}}
 >
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div on:click|stopPropagation>
-		<slot />
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div {onclick}>
+		{@render children?.()}
 		{jsConfetti.addConfetti()}
-		<!-- svelte-ignore a11y-autofocus -->
+		<!-- svelte-ignore a11y_autofocus -->
 		<!-- <button autofocus on:click={() => dialog.close()}>close modal</button> -->
 	</div>
 </dialog>
