@@ -9,9 +9,12 @@ export const load: LayoutLoad = async ({ url, fetch }) => {
 		redirect(302, `/login?message=${url.pathname} requires authentation`);
 	}
 
+	let userId = "";
+
 	try {
 		// `await pb.collection('users').authRefresh()` refreshes (and validates) the currently stored auth state with the server. It sends a POST /api/collections/users/auth-refresh request.
-		await pb.collection(pb.authStore.model?.collectionName).authRefresh({fetch: fetch});	// Custom sveltekit fetch
+		const model = await pb.collection(pb.authStore.model?.collectionName).authRefresh({fetch: fetch});	// Custom sveltekit fetch
+		userId = model.record.id;
 
 	} catch (error: any) {
 		pb.authStore.clear();
@@ -20,6 +23,7 @@ export const load: LayoutLoad = async ({ url, fetch }) => {
 
 	return {
 		message: url.searchParams.get('message'),
+		userId: userId
 	}
 }
 
