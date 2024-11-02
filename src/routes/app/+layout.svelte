@@ -26,12 +26,30 @@
 
 
 	import CheckIcon from 'lucide-svelte/icons/circle-check-big';
+	import ListCheckIcon from 'lucide-svelte/icons/list-checks';
 	import UserIcon from 'lucide-svelte/icons/user';
 
 	const navList = [
-		{ name: "Trang chủ", icon: null, route: "/app"}, 
-		{ name: "Điểm danh", icon: CheckIcon, route: "/app/attendance-check"},
-		{ name: "Tài khoản", icon: UserIcon, route: "/app/profile"},
+		{ 
+			name: "Trang chủ",
+			route: "/app",
+			icon: null,
+		}, 
+		{
+			name: "Điểm danh", 
+			route: "/app/attendance-check",
+			icon: CheckIcon,
+		},
+		{
+			name: "Kiểm duyệt", 
+			route: "/app/kd/", 
+			icon: ListCheckIcon
+		},
+		{ 
+			name: "Tài khoản",
+			route: "/app/profile", 
+			icon: UserIcon, 
+		},
 	]
 </script>
 

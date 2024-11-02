@@ -10,9 +10,14 @@
   function handleKeyDown(evt: { key: string }) {
     // Note number
     const key = parseInt(evt.key);
-    if (!isNaN(key) && key >= 1 && key <= Math.min(9, statusList.length)) {
-      console.log("Keydown", evt.key, tableData.rowfocus);
-      tableData.rows[tableData.rowfocus].assignedStatus = statusList[parseInt(evt.key)-1];
+    if (!isNaN(key) && key >= 0 && key <= Math.min(9, statusList.length)) {
+      console.log("Keydown", key, tableData.rowfocus);
+
+      if (key === 0) {
+        tableData.rows[tableData.rowfocus].assignedStatus = "";
+      } else {
+        tableData.rows[tableData.rowfocus].assignedStatus = statusList[key-1];
+      }
       // console.log("CODE PRESSED: ", parseInt(evt.key), rowToDisplay[rowfocus].testStatus);
       return;
     }
@@ -33,11 +38,11 @@
 <svelte:window onkeydown={handleKeyDown} />
 
 
-<VirtualList items={tableData.rows} class="border border-primary rounded-lg" isTable={true}>
+<VirtualList items={tableData.rows} isTable={true}>
   {#snippet header()}
     <thead class="sticky top-0 z-10 bg-base-300 w-full">
       <tr>
-        <th class="text-center">STT</th>
+        <th class="text-center" style="border-top-left-radius: 0.25rem;">STT</th>
         <th>Name</th>
         <th>MSSV</th>
         {#if tableData.rows.at(0)?.Faculty !== undefined && !compactTable}
@@ -63,13 +68,6 @@
         <td class="long-ass-col"><div>{item.Faculty}</div></td>
       {/if}
 
-
-<!--       {#if row.ProofImage !== undefined}
-        <td class:text-error={!row.ProofCheck}>
-          {row.ProofImage} {row.CheckinList?.length}
-        </td>
-      {/if} -->
-
       <td class="min-w-32">    
         {#if item.UAStatus === 2}
           <div class="badge whitespace-nowrap badge-outline brightness-[0.8] badge-success">
@@ -90,14 +88,14 @@
       <td class="text-center">
         <input type="checkbox" class="checkbox checkbox-success"
           checked={item.UAStatus === 2}
-          onchange={e => { item.UAStatus = (e.target.checked ? 2 : 1); } }
+          onchange={(e) => { item.UAStatus = (e.currentTarget.checked ? 2 : 1); } }
         />
       </td>
 
       <td class="text-center">
         <!-- Select status -->
         <select class="select select-bordered select-xs min-w-24 select-arrow"
-          onchange={(e) => item.assignedStatus = e.target.value}
+          onchange={(e) => item.assignedStatus = e.currentTarget.value}
           value={item.assignedStatus} >
 
 
@@ -116,10 +114,15 @@
   :global(table) {
     @apply w-full table table-xs;
   }
-    .long-ass-col {
-    @apply max-w-[8vw];
+
+  .long-ass-col {
+    max-width: 8vw;
   }
+
   .long-ass-col div {
-    @apply whitespace-nowrap overflow-hidden text-ellipsis max-w-full;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 </style>

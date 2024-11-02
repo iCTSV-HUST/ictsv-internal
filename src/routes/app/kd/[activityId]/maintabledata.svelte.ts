@@ -93,7 +93,7 @@ type Row = {
 	ProofImage: number;
 	ProofCheck: number;
 
-	imgSrc?: string;
+	imageAsset?: string;
 	coords?: number[][];
 	addresses?: string;
 	assignedStatus?: string;
@@ -104,7 +104,14 @@ export type MainTable = {
 	rowfocus: number;
 }
 
+export type GetAllResult = {
+	RespCode: number;
+	RespText: string;
+	UserActivityLst: Row[];
+	NumberPage: number;	
+}
+
 export const tableData = $state<MainTable>({
-	rows: Array(1000).fill(testRows).flat().slice(0, 1000) as Row[],
+	rows: testRows as Row[],
 	rowfocus: 0
 })

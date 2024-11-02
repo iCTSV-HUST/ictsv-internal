@@ -12,8 +12,9 @@
 
 			// info.AId = 
 			// info.UserName = params.get("UserName");
-			const AId = params.get("AId");
+			const AId = params.get("AId") ?? "";
 			kdData.TokenCode = params.get("TokenCode") ?? "";
+			kdData.AId = AId;
 
 			goto(`/app/kd/${AId}`);
 		} catch (err) {
