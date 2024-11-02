@@ -1,6 +1,6 @@
 // Global store
 
-import type { AttendancesRecord, IsoDateString, MembersRequiredRecord, RecordIdString } from '$lib/pocketbase-types';
+import type { IsoDateString, MembersRequiredRecord, RecordIdString } from '$lib/pocketbase-types';
 import { pb } from '$lib/pocketbase';
 
 
