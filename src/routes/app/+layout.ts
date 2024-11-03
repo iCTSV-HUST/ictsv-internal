@@ -100,7 +100,7 @@ export const load: LayoutLoad = async ({ url, fetch }) => {
 
 	const allowedNavList = navList.filter(isRouteAllowed);
 	// console.log(allowedNavList);
-
+	
 	return {
 		navList: allowedNavList,
 		message: url.searchParams.get('message'),

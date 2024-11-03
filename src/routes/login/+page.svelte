@@ -11,6 +11,7 @@
 	import EmailIcon from 'lucide-svelte/icons/mail';
 	import KeyIcon from 'lucide-svelte/icons/key-round';
 	import InputLabel from './InputLabel.svelte';
+    import { currentUser } from '$lib/user.svelte';
 
 	const { data } = $props();
 
@@ -60,6 +61,7 @@
 				.collection("members")
 				.authWithPassword(formData.email.toLowerCase(), formData.password);
 
+			currentUser.clear();
 			goto('/app?message=Logged in successfully');
 		} catch (e) {
 			const err = e as ClientResponseError;
