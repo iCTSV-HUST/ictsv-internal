@@ -1,7 +1,7 @@
 <script lang='ts'>
-    import { userData } from "$lib/appimportant.svelte";
+    import { currentUser } from "$lib/user.svelte";
 
-	const myUser = userData.info;
+	const myUser = currentUser.info;
 </script>
 
 

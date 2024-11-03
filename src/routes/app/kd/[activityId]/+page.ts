@@ -1,6 +1,5 @@
 import { kdData } from "../kddata.svelte";
 import type { PageLoad } from "./$types";
-import { pb } from '$lib/pocketbase';
 
 export const load: PageLoad = async ({ fetch, params }) => {
   const jsonBody = JSON.stringify({
@@ -15,7 +14,7 @@ export const load: PageLoad = async ({ fetch, params }) => {
 
 
     TokenCode: kdData.TokenCode,
-    UserName: pb.authStore.model?.usercode,
+    UserName: kdData.UserName,
   });
 
   const getRows = fetch("https://ctsv.hust.edu.vn/api-t/Activity/GetUserActivityByAId", {

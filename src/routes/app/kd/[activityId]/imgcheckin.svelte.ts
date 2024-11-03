@@ -1,11 +1,11 @@
 import toast from 'svelte-french-toast';
 import dayjs from 'dayjs';
+import pAll from 'p-all';
 
-import { kdData, type KDiCTSVDataType } from '../kddata.svelte';
-import { pb } from '$lib/pocketbase';
+import { kdData, type KDCTSVDataRequired } from '../kddata.svelte';
 import { tableData } from './maintabledata.svelte';
 
-const unchangedData: KDiCTSVDataType & { UserName: string } = {
+const unchangedData: KDCTSVDataRequired = {
     AId: '',
     TokenCode: '',
     UserName: ''
@@ -14,7 +14,7 @@ const unchangedData: KDiCTSVDataType & { UserName: string } = {
 function setupInfo() {
 	unchangedData.AId = kdData.AId;
 	unchangedData.TokenCode = kdData.TokenCode;
-	unchangedData.UserName = pb.authStore.model?.usercode;
+	unchangedData.UserName = kdData.UserName;
 	console.log(unchangedData);
 
 	return unchangedData.AId != '' && unchangedData.TokenCode != '' && unchangedData.UserName != '';
@@ -25,7 +25,7 @@ async function getImage(mssv: string) {
 		const response = await fetch(`https://ctsv.hust.edu.vn/api-t/UploadFile/CTSV/Download?UserName=${unchangedData.UserName}&AId=${unchangedData.AId}&TokenCode=${unchangedData.TokenCode}&UserCode=${mssv}`);
 
 		if (!response.ok) {
-			toast.error("Không có ảnh!");
+			toast.error(`Không có ảnh ${mssv}!`);
 			return "";
 		}
 
@@ -79,7 +79,7 @@ async function getCheckin(mssv: string) {
 		const checkinResult: { UserCheckInActivityLst: CheckinType[] } = await response.json();
 
 		if (checkinResult.UserCheckInActivityLst.length === 0) {
-			toast.error("Không có checkin!");
+			// toast.error("Không có checkin!");
 			return {
 				coords: [],
 				addresses: "Không có checkin."
@@ -116,12 +116,19 @@ async function getCheckin(mssv: string) {
 	}
 }
 
-const mssvRowMap: { [key: string]: number } = {};
+
 
 function setupRows() {
-	tableData.rows.forEach((row, index) => {
-		mssvRowMap[row.UserCode] = index;
-		document.getElementById(`row-${index}`)?.classList.add("error-down");
+	tableData.rows.forEach((row) => {
+		if (!row.hasOwnProperty("imageAsset")) {
+			row.imageAsset = "";
+		}
+		
+		if (!row.hasOwnProperty("coords")) {
+			row.coords = [];
+		}
+		
+		// document.getElementById(`row-${index}`)?.classList.add("error-down-img", "error-down-checkin");
 	});
 }
 
@@ -140,30 +147,38 @@ export class Downloader {
 		this.progress = 0;
 
 		// Get MSSV list to download
-		const toDownloadList: Promise<unknown>[] = [];
-		const total = tableData.rows.length;
+		const toDownloadList = [];
+		const total = tableData.displayRows.length;
 
 		for (let i = 0; i < total; i++) {
-			const row = tableData.rows[i];
+			const row = tableData.rows[tableData.displayRows[i].index];
 			if (!row.hasOwnProperty("imageAsset") || row.imageAsset === "") {
-				toDownloadList.push(new Promise(async () => {
+				toDownloadList.push(async () => {
 					row.imageAsset = await getImage(row.UserCode);
 					this.progress += 1;
-				}));
+					// if (row.imageAsset != "") {
+					// 	document.getElementById(`row-${mssvRowMap[row.UserCode]}`)?.classList.remove("error-down-img");
+					// }
+				});
 			}
 
 			if (!row.hasOwnProperty("coords") || row.coords?.length === 0) {
-				toDownloadList.push(new Promise(async () => {
+				toDownloadList.push(async () => {
 					const { coords, addresses } = await getCheckin(row.UserCode);
 					row.coords = coords;
 					row.addresses = addresses;
 					this.progress += 1;
-				}));
+
+					// TODO: Should not use hard coded values here
+					if (row.coords.length == 0 && row.addresses == "Không có checkin.") {
+						row.assignedStatus = "5. Không checkin";
+					}
+				});
 			}
 		}
 
 		this.total = toDownloadList.length;
-		Promise.all(toDownloadList);
+		pAll(toDownloadList, { concurrency: 10 });
 	}
 }
 

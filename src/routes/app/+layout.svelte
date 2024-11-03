@@ -11,7 +11,7 @@
 	// Get data once
 	if (appData.members.length === 0) {
 		toast.promise(
-			refreshAppData(data.userId), {
+			refreshAppData(), {
 			loading: "Loading...",
 			success: "Loaded!",
 			error: e => { 
@@ -29,28 +29,15 @@
 	import ListCheckIcon from 'lucide-svelte/icons/list-checks';
 	import UserIcon from 'lucide-svelte/icons/user';
 
-	const navList = [
-		{ 
-			name: "Trang chủ",
-			route: "/app",
-			icon: null,
-		}, 
-		{
-			name: "Điểm danh", 
-			route: "/app/attendance-check",
-			icon: CheckIcon,
-		},
-		{
-			name: "Kiểm duyệt", 
-			route: "/app/kd/", 
-			icon: ListCheckIcon
-		},
-		{ 
-			name: "Tài khoản",
-			route: "/app/profile", 
-			icon: UserIcon, 
-		},
-	]
+	const navIcons: {
+		[key: string]: any
+	} = {
+		"attendance": CheckIcon,
+		"kd": ListCheckIcon,
+		"profile": UserIcon
+	}
+
+	const navList = data.navList.map(r => ({...r, icon: r.iconName ? navIcons[r.iconName] : null}) )
 </script>
 
 

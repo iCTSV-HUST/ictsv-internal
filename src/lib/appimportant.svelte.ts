@@ -13,7 +13,7 @@ export type AttendancesInfo = {
 }
 
 export type MemberInfo = {
-    email?: string;
+	email?: string;
 	active: boolean;
 	avatar: string;
 	name: string;
@@ -32,17 +32,12 @@ type MemberDataType = {
 	attendances: AttendancesInfo[];
 }
 
-export const userData = $state<{
-	info?: MemberInfo, 
-}>({});
-
 export const appData = $state<MemberDataType>({
 	members: [],
 	attendances: [],
 })
 
-
-export async function refreshAppData(userId: RecordIdString) {
+export async function refreshAppData() {
 	const members = await pb.collection('members').getFullList<MembersRequiredRecord>({
 		sort: '-sort_override,-department.name,+role.rank,+generation',
 		expand: 'department,role',
@@ -72,8 +67,6 @@ export async function refreshAppData(userId: RecordIdString) {
 	});
 
 	appData.attendances = attendances;
-
-	userData.info = appData.members.find(m => m.id === userId);
 
 	console.info("Data loaded");
 }

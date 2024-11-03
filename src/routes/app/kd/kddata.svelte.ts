@@ -1,9 +1,17 @@
-export type KDiCTSVDataType = {
+export type KDCTSVDataRequired = {
 	AId: string;
 	TokenCode: string;
+	UserName: string;
 }
 
-export const kdData = $state<KDiCTSVDataType>({
+export type KDCTSVResponseType = {
+	RespCode: number;
+	RespText: string;
+	Signature: string;
+}
+
+export const kdData = $state<KDCTSVDataRequired>({
 	AId: "",
 	TokenCode: "",
+	UserName: "",
 })

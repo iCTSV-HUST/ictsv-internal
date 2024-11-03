@@ -32,6 +32,21 @@
 	transform: scale(0.95);
 }*/
 
+tr.error-down-img > td {
+	background-color: oklch(var(--wa)) !important;
+}
+tr.error-down-checkin > td {
+	background-color: oklch(var(--wa) / .5);
+}
+
+tr.row-outrange > td {
+	background-color: rgba(0, 0, 255, 0.6);
+}
+
+tr.active > td {
+	background-color: oklch(var(--b3));
+}
+
 
 
 

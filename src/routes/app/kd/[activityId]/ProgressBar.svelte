@@ -9,7 +9,7 @@
 
 {#if progressCurrent >= 0 && progressCurrent < progressTotal}
 <div class="flex items-center px-4 gap-2" transition:slide={{ axis: 'x'}}>
-	<progress class="progress progress-success lg:w-32 w-16 h-3" value={progressCurrent} max={progressTotal}></progress>
+	<progress class="progress progress-success lg:w-48 w-32 h-3" value={progressCurrent} max={progressTotal}></progress>
 	<span>{(progressCurrent / progressTotal * 100).toFixed(2)}%</span>
 </div>
 {/if}

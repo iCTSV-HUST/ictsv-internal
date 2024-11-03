@@ -17,7 +17,7 @@
 		});
 	}
 
-	$inspect(memberList);
+	// $inspect(memberList);
 </script>
 
 <div class="flex flex-col h-full">

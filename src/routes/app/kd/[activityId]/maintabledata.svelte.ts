@@ -76,14 +76,9 @@ const testRows = [{
 ]
 
 
-type CheckinType = { 
-	Longitude: number; 
-	Latitude: number; 
-	CheckInTime: string; 
-	CheckInAddress: string; 
-};
-
 type Row = {
+	index: number;
+	
 	UserCode: string;
 	FullName: string;
 	UserRole: number;
@@ -99,19 +94,57 @@ type Row = {
 	assignedStatus?: string;
 }
 
-export type MainTable = {
-	rows: Row[];
-	rowfocus: number;
-}
 
-export type GetAllResult = {
-	RespCode: number;
-	RespText: string;
+import type { KDCTSVResponseType } from "../kddata.svelte";
+
+export type GetAllResult = KDCTSVResponseType & {
 	UserActivityLst: Row[];
 	NumberPage: number;	
 }
 
-export const tableData = $state<MainTable>({
-	rows: testRows as Row[],
-	rowfocus: 0
-})
+
+class MainTable {
+	rows = $state<Row[]>(testRows.map((r, index) => ({...r, index })));
+	rowfocus = $state(0);
+	filter = $state({
+		max: 0,
+		min: 0
+	})
+
+	#mssvRowMap: { [key: string]: number } = {};
+
+	initialize(rowList: Row[]) {
+		this.#mssvRowMap = {};
+
+		for (let i = 0; i < rowList.length; i++) {
+			rowList[i].index = i;
+			this.#mssvRowMap[rowList[i].UserCode] = i;
+		}
+
+		this.rows = rowList;
+		this.filter.min = 0;
+		this.filter.max = this.rows.length;
+	}
+
+	focusUp() {
+		if (this.rowfocus > 0) {
+			this.rowfocus--;
+		}
+	}
+
+	focusDown() {
+		if (this.rowfocus < this.rows.length) {
+			this.rowfocus++;
+		}
+	}
+
+	get currentRow() {
+		return this.rows[this.rowfocus];
+	}
+
+	get displayRows() {
+		return this.rows.slice(this.filter.min, this.filter.max);
+	}
+}
+
+export const tableData = new MainTable();

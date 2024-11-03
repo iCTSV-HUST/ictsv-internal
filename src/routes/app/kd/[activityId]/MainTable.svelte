@@ -1,23 +1,46 @@
 <script lang="ts">
   import { VirtualList } from 'svelte-virtuallists';
   import { tableData } from './maintabledata.svelte';
+    import { setStatus, Status } from './changeStatus';
 
   let DEVMODE = $state(true);
   let compactTable = $state(false);
 
-
-
-  function handleKeyDown(evt: { key: string }) {
+  function handleKeyDown(evt: { key: string; preventDefault: () => void; }) {
     // Note number
+
+    // Up, Down
+    if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
+      evt.preventDefault();
+
+      if (evt.key === 'ArrowUp') {
+        tableData.focusUp();
+      } else if (evt.key === 'ArrowDown') {
+        tableData.focusDown();
+      }
+
+      console.log(tableData.currentRow.UserCode);
+      const element = document.getElementById(`checkbox-${tableData.currentRow.UserCode}`);
+      element?.focus();
+      element?.scrollIntoView({
+        behavior: 'auto',
+        block: 'center',
+        inline: 'center'
+      });
+      return;
+    }
+
     const key = parseInt(evt.key);
     if (!isNaN(key) && key >= 0 && key <= Math.min(9, statusList.length)) {
-      console.log("Keydown", key, tableData.rowfocus);
+      // console.log("Keydown", key, tableData.rowfocus);
 
       if (key === 0) {
-        tableData.rows[tableData.rowfocus].assignedStatus = "";
+        tableData.currentRow.assignedStatus = "";
+
       } else {
-        tableData.rows[tableData.rowfocus].assignedStatus = statusList[key-1];
+        tableData.currentRow.assignedStatus = statusList[key-1];
       }
+      console.log("TESTING")
       // console.log("CODE PRESSED: ", parseInt(evt.key), rowToDisplay[rowfocus].testStatus);
       return;
     }
@@ -32,13 +55,14 @@
     "6. Photoshop",
     "7. Khác"
   ];
+
 </script>
 
   <!-- head -->
 <svelte:window onkeydown={handleKeyDown} />
 
 
-<VirtualList items={tableData.rows} isTable={true}>
+<VirtualList items={tableData.displayRows} isTable={true}>
   {#snippet header()}
     <thead class="sticky top-0 z-10 bg-base-300 w-full">
       <tr>
@@ -58,9 +82,17 @@
     </thead>
   {/snippet}
 
-  {#snippet vl_slot({ item, index })}
-    <tr>
-      <td class="text-center">{(index as number) + 1}</td>
+  {#snippet vl_slot({ item })}
+    <tr id={`row-${item.UserCode}`}
+
+      onfocus={() => tableData.rowfocus = item.index} 
+      onmouseover={() => tableData.rowfocus = item.index}
+      class:active={tableData.rowfocus === item.index}
+
+      class:error-down-img={item.imageAsset === ""}
+      class:error-down-checkin={item.coords?.length == 0}>
+
+      <td class="text-center">{item.index + 1}</td>
       <td class="long-ass-col"><div>{item.FullName}</div></td>
       <td>{item.UserCode}</td>
 
@@ -69,11 +101,11 @@
       {/if}
 
       <td class="min-w-32">    
-        {#if item.UAStatus === 2}
+        {#if item.UAStatus === Status.APPROVED}
           <div class="badge whitespace-nowrap badge-outline brightness-[0.8] badge-success">
             Xác nhận
           </div>
-        {:else if item.UAStatus === 1}
+        {:else if item.UAStatus === Status.PENDING}
           <div class="badge whitespace-nowrap badge-outline brightness-[0.8] badge-warning">
             Chờ phê duyệt
           </div>
@@ -86,17 +118,24 @@
 
       {#if DEVMODE}
       <td class="text-center">
-        <input type="checkbox" class="checkbox checkbox-success"
-          checked={item.UAStatus === 2}
-          onchange={(e) => { item.UAStatus = (e.currentTarget.checked ? 2 : 1); } }
+        <input id={`checkbox-${item.UserCode}`} type="checkbox" 
+          class="checkbox checkbox-success"
+          checked={item.UAStatus === Status.APPROVED}
+          onchange={(e) => { 
+            const toChange = e.currentTarget.checked ? Status.APPROVED : Status.PENDING;
+            tableData.rows[item.index].UAStatus = toChange;
+            if (DEVMODE) {
+              setStatus(item.UserCode, toChange);
+            }
+          } }
         />
       </td>
 
       <td class="text-center">
         <!-- Select status -->
         <select class="select select-bordered select-xs min-w-24 select-arrow"
-          onchange={(e) => item.assignedStatus = e.currentTarget.value}
-          value={item.assignedStatus} >
+          onchange={(e) => tableData.rows[item.index].assignedStatus = e.currentTarget.value}
+          value={item.assignedStatus ?? ""} >
 
 
           <option value="" selected>OK</option>
@@ -125,4 +164,6 @@
     text-overflow: ellipsis;
     max-width: 100%;
   }
+
+
 </style>
