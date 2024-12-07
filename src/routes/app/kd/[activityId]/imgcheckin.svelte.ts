@@ -26,17 +26,16 @@ async function getImage(mssv: string) {
 
 		if (!response.ok) {
 			toast.error(`Không có ảnh ${mssv}!`);
-			return "";
+			return null;
 		}
 
-		const blob = await response.blob();
-		return URL.createObjectURL(blob);
+		return await response.blob();
 
 	} catch (err) {
 		const e = err as Error;
 		console.log(e);
 		toast.error(e.message);
-		return "";
+		return null;
 	}
 }
 
@@ -119,7 +118,10 @@ async function getCheckin(mssv: string) {
 
 
 function setupRows() {
-	tableData.rows.forEach((row) => {
+	const total = tableData.displayRows.length;
+	for (let i = 0; i < total; i++) {
+		const row = tableData.rows[tableData.displayRows[i].index];
+
 		if (!row.hasOwnProperty("imageAsset")) {
 			row.imageAsset = "";
 		}
@@ -127,14 +129,20 @@ function setupRows() {
 		if (!row.hasOwnProperty("coords")) {
 			row.coords = [];
 		}
-		
 		// document.getElementById(`row-${index}`)?.classList.add("error-down-img", "error-down-checkin");
-	});
+	};
+}
+
+type BlobImage = {
+	mssv: string,
+	image: Blob,
 }
 
 export class Downloader {
 	progress = $state(-1);
 	total = 0;
+	#blobStorage: BlobImage[] = [];
+
 
 	async downloadAllImgsAndCheckins() {
 		setupRows();
@@ -145,6 +153,7 @@ export class Downloader {
 
 
 		this.progress = 0;
+		this.#blobStorage = [];
 
 		// Get MSSV list to download
 		const toDownloadList = [];
@@ -154,7 +163,17 @@ export class Downloader {
 			const row = tableData.rows[tableData.displayRows[i].index];
 			if (!row.hasOwnProperty("imageAsset") || row.imageAsset === "") {
 				toDownloadList.push(async () => {
-					row.imageAsset = await getImage(row.UserCode);
+					const downloadedBlob = await getImage(row.UserCode);
+
+					if (downloadedBlob != null) {
+						this.#blobStorage.push({
+							mssv: row.UserCode,
+							image: downloadedBlob
+						})
+
+						row.imageAsset = URL.createObjectURL(downloadedBlob);
+					}
+
 					this.progress += 1;
 					// if (row.imageAsset != "") {
 					// 	document.getElementById(`row-${mssvRowMap[row.UserCode]}`)?.classList.remove("error-down-img");
@@ -179,6 +198,10 @@ export class Downloader {
 
 		this.total = toDownloadList.length;
 		pAll(toDownloadList, { concurrency: 10 });
+	}
+
+	async zipAllImgs() {
+		
 	}
 }
 

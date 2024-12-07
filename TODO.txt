@@ -1,0 +1,3 @@
+DOING: zip downloading for KD
+
+- Centralized email management/sorting for KD

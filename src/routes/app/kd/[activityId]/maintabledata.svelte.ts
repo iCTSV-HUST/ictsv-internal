@@ -108,8 +108,9 @@ class MainTable {
 	rowfocus = $state(0);
 	filter = $state({
 		max: 0,
-		min: 0
-	})
+		min: 0,
+		list: new Array<string>()
+	});
 
 	#mssvRowMap: { [key: string]: number } = {};
 
@@ -124,6 +125,7 @@ class MainTable {
 		this.rows = rowList;
 		this.filter.min = 0;
 		this.filter.max = this.rows.length;
+		this.filter.list = [];
 	}
 
 	focusUp() {
@@ -142,9 +144,16 @@ class MainTable {
 		return this.rows[this.rowfocus];
 	}
 
-	get displayRows() {
-		return this.rows.slice(this.filter.min, this.filter.max);
-	}
+	displayRows = $derived.by(() => {
+		let filteredList = this.rows.slice(this.filter.min, this.filter.max);
+
+		if (this.filter.list.length !== 0) {
+			const allRowsMap = new Map(filteredList.map(row => [row.UserCode, row]));	// Map for fast lookup
+			
+			filteredList = this.filter.list.map(id => allRowsMap.get(id)).filter(Boolean) as Row[];
+		}
+		return filteredList;
+	})
 }
 
 export const tableData = new MainTable();

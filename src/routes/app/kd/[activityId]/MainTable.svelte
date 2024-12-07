@@ -1,9 +1,14 @@
 <script lang="ts">
   import { VirtualList } from 'svelte-virtuallists';
   import { tableData } from './maintabledata.svelte';
-    import { setStatus, Status } from './changeStatus';
+  import { setStatus, Status } from './changeStatus';
 
-  let DEVMODE = $state(true);
+  let {
+    editable = false,
+  }: {
+    editable?: boolean
+  } = $props();
+
   let compactTable = $state(false);
 
   function handleKeyDown(evt: { key: string; preventDefault: () => void; }) {
@@ -74,7 +79,7 @@
         {/if}
         <th>Status</th>
 
-        {#if DEVMODE}
+        {#if editable}
           <th class="text-center">Xác nhận</th>
           <th>Note</th>
         {/if}
@@ -93,7 +98,7 @@
       class:error-down-checkin={item.coords?.length == 0}>
 
       <td class="text-center">{item.index + 1}</td>
-      <td class="long-ass-col"><div>{item.FullName}</div></td>
+      <td class="long-ass-col" title={item.FullName}><div>{item.FullName}</div></td>
       <td>{item.UserCode}</td>
 
       {#if item.Faculty !== undefined && !compactTable}
@@ -116,7 +121,7 @@
         {/if}
       </td>
 
-      {#if DEVMODE}
+      {#if editable}
       <td class="text-center">
         <input id={`checkbox-${item.UserCode}`} type="checkbox" 
           class="checkbox checkbox-success"
@@ -124,7 +129,7 @@
           onchange={(e) => { 
             const toChange = e.currentTarget.checked ? Status.APPROVED : Status.PENDING;
             tableData.rows[item.index].UAStatus = toChange;
-            if (DEVMODE) {
+            if (editable) {
               setStatus(item.UserCode, toChange);
             }
           } }
