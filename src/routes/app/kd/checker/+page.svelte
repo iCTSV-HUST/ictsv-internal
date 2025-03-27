@@ -18,8 +18,7 @@
 			kdData.AId = AId;
 			kdData.UserName = currentUser.info.usercode;
 
-			console.log(`/app/kd/${AId}`, AId)
-			goto(`/app/kd/${AId}`);
+			goto(`/app/kd/checker/${AId}`);
 		} catch (err) {
 			toast.error("Invalid URL", { position: "top-center" });
 			console.error(err);

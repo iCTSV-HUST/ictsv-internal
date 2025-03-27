@@ -35,8 +35,8 @@ const navList: Route[] = [
 		iconName: "attendance",
 	},
 	{
-		name: "Kiểm duyệt", 
-		route: "/app/kd", 
+		name: "Kiểm duyệt - Duyệt MC", 
+		route: "/app/kd/checker", 
 		permission: ({ depts }) => depts.includes("Mảng Kiểm duyệt"),
 		iconName: "kd"
 	},
