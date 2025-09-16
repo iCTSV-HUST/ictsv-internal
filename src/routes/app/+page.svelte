@@ -1,19 +1,21 @@
-<script lang='ts'>
-	import { appData, type MemberInfo } from "$lib/appimportant.svelte";
-	import DepartmentDisplay from "./DepartmentDisplay.svelte";
+<script lang="ts">
+	import { appData, type MemberInfo } from '$lib/appimportant.svelte';
+	import DepartmentDisplay from './DepartmentDisplay.svelte';
 
 	let memberList = $state<MemberInfo[]>([]);
 
 	$effect(() => {
 		memberList = [...appData.members];
-	})
+	});
 
 	function sortFunction() {
-		memberList.sort((a,b) => {
-			return a.department[0].localeCompare(b.department[0])
-				|| a.rank - b.rank
-				|| a.generation - b.generation
-				|| a.name.localeCompare(b.name);
+		memberList.sort((a, b) => {
+			return (
+				a.department[0].localeCompare(b.department[0]) ||
+				a.rank - b.rank ||
+				a.generation - b.generation ||
+				a.name.localeCompare(b.name)
+			);
 		});
 	}
 
@@ -25,7 +27,7 @@
 
 	<!-- <button class="btn" onclick={sortFunction}>Sort</button> -->
 
-	<div class="w-[80%] border-base-content border-2 rounded-xl mx-4 overflow-x-hidden h-full ">
+	<div class="w-[80%] border-base-content border-2 rounded-xl mx-4 overflow-x-hidden h-full">
 		<table class="table table-sm table-pin-rows">
 			<thead>
 				<tr class="bg-base-300">
@@ -36,10 +38,10 @@
 					<th>Gen</th>
 				</tr>
 			</thead>
-			<tbody class="overflow-y-scroll ">
+			<tbody class="overflow-y-scroll">
 				{#each memberList as member, index (member.id)}
 					<tr>
-						<td>{index+1}</td>
+						<td>{index + 1}</td>
 						<td>{member.name}</td>
 						<td><DepartmentDisplay depts={member.department} /></td>
 						<td>{member.role}</td>
@@ -50,4 +52,3 @@
 		</table>
 	</div>
 </div>
-

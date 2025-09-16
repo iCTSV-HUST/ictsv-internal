@@ -1,9 +1,8 @@
-<script lang='ts'>
-    import { currentUser } from "$lib/user.svelte";
+<script lang="ts">
+	import { currentUser } from '$lib/user.svelte';
 
 	const myUser = currentUser.info;
 </script>
-
 
 <div>
 	{#if myUser}
@@ -12,7 +11,7 @@
 		{#if myUser.email}
 			<div>Email: {myUser.email}</div>
 		{/if}
-		<div>Mảng: {myUser.department.join(", ")}</div>
+		<div>Mảng: {myUser.department.join(', ')}</div>
 		<div>Chức vụ: {myUser.role}</div>
 		<div>Gen: {myUser.generation}</div>
 	{:else}

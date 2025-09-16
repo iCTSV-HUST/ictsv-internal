@@ -1,6 +1,6 @@
-import type { ZodError, ZodType } from "zod";
+import type { ZodError, ZodType } from 'zod';
 
-export const validateData = async (body: unknown, schema: ZodType ) => {
+export const validateData = async (body: unknown, schema: ZodType) => {
 	try {
 		const data = schema.parse(body);
 		return {
@@ -18,7 +18,7 @@ export const validateData = async (body: unknown, schema: ZodType ) => {
 	}
 };
 
-export 	function download(filename: string, text: string | number | boolean) {
+export function download(filename: string, text: string | number | boolean) {
 	var element = document.createElement('a');
 	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
 	element.setAttribute('download', filename);

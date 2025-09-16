@@ -1,7 +1,10 @@
-<script lang='ts'>
-    import type { Snippet } from "svelte";
+<script lang="ts">
+	import type { Snippet } from 'svelte';
 
-	let { error, children }: {
+	let {
+		error,
+		children
+	}: {
 		error?: any;
 		children: Snippet;
 	} = $props();

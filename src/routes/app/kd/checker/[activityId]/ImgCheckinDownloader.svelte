@@ -1,4 +1,4 @@
-<script lang='ts'>
+<script lang="ts">
 	let { disabled = false } = $props();
 
 	import { Downloader } from './imgcheckin.svelte';
@@ -7,10 +7,11 @@
 	const myDownloader = new Downloader();
 </script>
 
-
-<button class="join-item btn btn-success border-2 " 
-	onclick={() => myDownloader.downloadAllImgsAndCheckins() }
-	disabled={disabled}>
+<button
+	class="join-item btn btn-success border-2"
+	onclick={() => myDownloader.downloadAllImgsAndCheckins()}
+	{disabled}
+>
 	Tải tất cả ảnh
 </button>
 

@@ -1,24 +1,21 @@
-@import "ol/ol.css";
+@import 'ol/ol.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-.dateinput > input[type="text"] {
+.dateinput > input[type='text'] {
 	@apply input input-bordered input-sm rounded-lg mt-2 w-fit;
-
 }
 
 .dateinput {
 	--date-picker-foreground: oklch(var(--bc));
 	--date-picker-background: oklch(var(--b1));
-	--date-picker-highlight-border: oklch(var(--a)); 
-/*		--date-picker-highlight-shadow:;*/
+	--date-picker-highlight-border: oklch(var(--a));
+	/*		--date-picker-highlight-shadow:;*/
 	--date-picker-selected-color: oklch(var(--ac));
 	--date-picker-selected-background: oklch(var(--a) / 0.4);
 }
-
 
 /*.btn-animate {
 	transition-property: all;
@@ -36,7 +33,7 @@ tr.error-down-img > td {
 	background-color: oklch(var(--wa)) !important;
 }
 tr.error-down-checkin > td {
-	background-color: oklch(var(--wa) / .5);
+	background-color: oklch(var(--wa) / 0.5);
 }
 
 tr.row-outrange > td {
@@ -46,7 +43,3 @@ tr.row-outrange > td {
 tr.active > td {
 	background-color: oklch(var(--b3));
 }
-
-
-
-
