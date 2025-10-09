@@ -1,3 +1,12 @@
 DOING: zip downloading for KD
 
 - Centralized email management/sorting for KD
+- Improve security for passwordHash column in 
+
+
+
+\copy members(name, role_id, usercode, generation, active, email, password_hash) FROM 'D:\,DOWNLOADS\hashed_output.csv' DELIMITER ',' CSV HEADER
+
+\copy departments FROM 'D:\,DOWNLOADS\departments.csv' DELIMITER ',' CSV HEADER
+
+\copy member_departments FROM 'D:\,DOWNLOADS\member_departments.csv' DELIMITER ',' CSV HEADER

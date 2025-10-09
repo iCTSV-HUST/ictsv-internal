@@ -1,7 +1,17 @@
-import { roleMap } from '$lib/server/types';
+import { mapMemberRole } from '$lib/server/types';
 import { db } from '../db';
-import { membersTable, type SelectMember } from '../schema';
-import { eq } from 'drizzle-orm';
+import { membersTable } from '../schema';
+import { eq, getTableColumns } from 'drizzle-orm';
+
+const {
+	passwordHash, 
+	createdAt,
+	updatedAt,
+	lastLoginAt, 
+	...rest
+} = getTableColumns(membersTable);
+
+const publicCols = { ...rest }
 
 export async function findMemberByUsercode(usercode: string) {
 	const [member] = await db
@@ -12,9 +22,10 @@ export async function findMemberByUsercode(usercode: string) {
 	return member;
 }
 
+
 // export async function findMemberByEmail(email: string) {
 // 	const [member] = await db
-// 		.select()
+// 		.select(publicCols)
 // 		.from(membersTable)
 // 		.where(eq(membersTable.email, email))
 // 		.limit(1);
@@ -23,19 +34,15 @@ export async function findMemberByUsercode(usercode: string) {
 
 // export async function findMemberById(id: number) {
 // 	const [member] = await db
-// 		.select()
+// 		.select(publicCols)
 // 		.from(membersTable)
 // 		.where(eq(membersTable.id, id))
 // 		.limit(1);
 // 	return member;
 // }
 
-function mapMemberRole(member: SelectMember) {
-	return {
-		...member,
-		role: roleMap[member.roleId]
-	};
-}
+
+
 
 export async function updateLastLogin(memberId: number) {
 	await db
@@ -57,6 +64,6 @@ export async function createMember(data: {
 }
 
 export async function getMembers() {
-	const members = await db.select().from(membersTable).where(eq(membersTable.active, true));
+	const members = await db.select(publicCols).from(membersTable).where(eq(membersTable.active, true));
 	return members.map(mapMemberRole);
 }

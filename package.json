@@ -11,7 +11,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "deploy": "pnpm run build && wrangler pages deploy",
     "cf-typegen": "wrangler types && move worker-configuration.d.ts src/",
-    "db:generate": "drizzle-kit generate --dialect=postgresql --schema=src/lib/server/db/schema.ts --out=./drizzle",
+    "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
     "db:migrate": "tsx ./src/lib/server/db/migrate.ts"
   },
   "devDependencies": {
@@ -21,6 +21,7 @@
     "@sveltejs/kit": "^2.37.1",
     "@sveltejs/vite-plugin-svelte": "^4.0.4",
     "@types/bcrypt": "^6.0.0",
+    "@types/papaparse": "^5.3.16",
     "autoprefixer": "^10.4.21",
     "daisyui": "^4.12.24",
     "drizzle-kit": "^0.31.4",
@@ -47,6 +48,7 @@
     "lucide-svelte": "^0.543.0",
     "ol": "^10.6.1",
     "p-all": "^5.0.0",
+    "papaparse": "^5.5.3",
     "svelte-french-toast": "2.0.0-alpha.0",
     "svelte-virtuallists": "^1.4.2",
     "zod": "^3.25.76"

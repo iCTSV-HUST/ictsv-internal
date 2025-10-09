@@ -3,7 +3,7 @@
 	// import { logout } from "$lib/pocketbase";
 	import toast from 'svelte-french-toast';
 
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	const { data, children } = $props();
 
@@ -54,7 +54,7 @@
 			<ul class="flex flex-col gap-2">
 				{#each navList as nav}
 					<li>
-						<a class:bg-primary={$page.url.pathname === nav.route} href={nav.route}>
+						<a class:bg-primary={page.url.pathname === nav.route} href={nav.route}>
 							<div class="flex gap-2 items-center">
 								{#if nav.icon != null}
 									<nav.icon size="1.25em" />

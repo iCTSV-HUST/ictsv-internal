@@ -5,7 +5,7 @@ import { migrate } from 'drizzle-orm/neon-http/migrator';
 import { config } from 'dotenv';
 config({ path: '.env' });
 const sql = neon(process.env.DEVELOPER_ONLY_DATABASE_URL!);
-const db = drizzle(sql);
+const db = drizzle({ client: sql, casing: 'snake_case' });
 const main = async () => {
 	try {
 		await migrate(db, {

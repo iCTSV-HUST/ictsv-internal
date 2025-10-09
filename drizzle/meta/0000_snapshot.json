@@ -1,5 +1,5 @@
 {
-  "id": "51f52753-a471-4bc2-ad3a-f15f732a4097",
+  "id": "c7ffe282-48b3-45d4-b453-78a4130569ab",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -160,14 +160,14 @@
       "name": "member_departments",
       "schema": "",
       "columns": {
-        "memberId": {
-          "name": "memberId",
+        "member_id": {
+          "name": "member_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "departmentId": {
-          "name": "departmentId",
+        "department_id": {
+          "name": "department_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -175,12 +175,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "member_departments_memberId_members_id_fk": {
-          "name": "member_departments_memberId_members_id_fk",
+        "member_departments_member_id_members_id_fk": {
+          "name": "member_departments_member_id_members_id_fk",
           "tableFrom": "member_departments",
           "tableTo": "members",
           "columnsFrom": [
-            "memberId"
+            "member_id"
           ],
           "columnsTo": [
             "id"
@@ -188,12 +188,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "member_departments_departmentId_departments_id_fk": {
-          "name": "member_departments_departmentId_departments_id_fk",
+        "member_departments_department_id_departments_id_fk": {
+          "name": "member_departments_department_id_departments_id_fk",
           "tableFrom": "member_departments",
           "tableTo": "departments",
           "columnsFrom": [
-            "departmentId"
+            "department_id"
           ],
           "columnsTo": [
             "id"
@@ -203,11 +203,11 @@
         }
       },
       "compositePrimaryKeys": {
-        "member_departments_memberId_departmentId_pk": {
-          "name": "member_departments_memberId_departmentId_pk",
+        "member_departments_member_id_department_id_pk": {
+          "name": "member_departments_member_id_department_id_pk",
           "columns": [
-            "memberId",
-            "departmentId"
+            "member_id",
+            "department_id"
           ]
         }
       },
@@ -281,8 +281,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "roleId": {
-          "name": "roleId",
+        "role_id": {
+          "name": "role_id",
           "type": "varchar(10)",
           "primaryKey": false,
           "notNull": true
@@ -312,28 +312,28 @@
           "primaryKey": false,
           "notNull": true
         },
-        "passwordHash": {
-          "name": "passwordHash",
+        "password_hash": {
+          "name": "password_hash",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "lastLoginAt": {
-          "name": "lastLoginAt",
+        "last_login_at": {
+          "name": "last_login_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false
@@ -410,33 +410,33 @@
           "primaryKey": true,
           "notNull": true
         },
-        "memberId": {
-          "name": "memberId",
+        "member_id": {
+          "name": "member_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "expiresAt": {
-          "name": "expiresAt",
+        "expires_at": {
+          "name": "expires_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "ipAddress": {
-          "name": "ipAddress",
+        "ip_address": {
+          "name": "ip_address",
           "type": "varchar(45)",
           "primaryKey": false,
           "notNull": false
         },
-        "userAgent": {
-          "name": "userAgent",
+        "user_agent": {
+          "name": "user_agent",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -444,12 +444,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "sessions_memberId_members_id_fk": {
-          "name": "sessions_memberId_members_id_fk",
+        "sessions_member_id_members_id_fk": {
+          "name": "sessions_member_id_members_id_fk",
           "tableFrom": "sessions",
           "tableTo": "members",
           "columnsFrom": [
-            "memberId"
+            "member_id"
           ],
           "columnsTo": [
             "id"

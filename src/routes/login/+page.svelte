@@ -6,17 +6,11 @@
 	import KeyIcon from 'lucide-svelte/icons/key-round';
 	import InputLabel from './InputLabel.svelte';
 
-	const { data, form } = $props();
+	const { form } = $props();
 
 	if (form?.failMessage) {
-		toast.error(data.message);
+		toast.error(form.failMessage);
 	}
-
-	$inspect(data);
-
-	$effect(() => {
-		console.log(data.message);
-	});
 
 	let loading = $state(false);
 

@@ -1,5 +1,6 @@
 import { findMemberByUsercode, updateLastLogin } from '../db/queries/members';
 import { createSession, deleteSession, findSessionById } from '../db/queries/sessions';
+import { memberPublicize } from '../types';
 import { verifyPassword } from './password';
 import { generateSessionId, getSessionExpiry, isSessionExpired } from './session';
 
@@ -36,7 +37,7 @@ export async function login(credentials: {
 
 	await updateLastLogin(member.id);
 
-	return { session, member };
+	return { session, member: memberPublicize(member) };
 }
 
 export async function validateSession(sessionId: string) {
