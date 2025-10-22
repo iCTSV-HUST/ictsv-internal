@@ -1,0 +1,67 @@
+import { redirect } from '@sveltejs/kit';
+import type { LayoutServerLoad } from './$types';
+import { RoleLevel, roleMap, type RoleId } from '$lib/types';
+
+type Route = {
+	name: string;
+	route: string;
+	iconName?: string;
+
+	permission?: (member: { level: number; departments: string[] }) => boolean;
+};
+
+const navList: Route[] = [
+	{
+		name: 'Trang chủ',
+		route: '/app'
+	},
+	{
+		name: 'Điểm danh',
+		route: '/app/attendance-check',
+        iconName: 'attendance',
+		permission: ({ level, departments }) =>
+			departments.includes('Tiểu ban') || level <= RoleLevel.ToPho
+	},
+	{
+		name: 'Kiểm duyệt - Duyệt MC',
+		route: '/app/kd/checker',
+        iconName: 'kd',
+		permission: ({ departments }) => departments.includes('Mảng Kiểm duyệt')
+	},
+	{
+		name: 'Tài khoản',
+		route: '/app/profile',
+        iconName: 'profile',
+	}
+];
+
+function addFailMessage(url: string, message: string) {
+	return encodeURI(url + "?failmessage=" + message)
+}
+
+export const load: LayoutServerLoad = async ({ locals, url }) => {
+	const user = locals.currentUser;
+
+	if (!user) throw redirect(303, addFailMessage('/login', 'Bạn chưa đăng nhập'));
+
+    const userInfo = {
+        level: roleMap[user.roleId].level,
+        departments: user.departments
+    }
+
+	const currentRoute = navList.find((r) => r.route === url.pathname);
+	if (currentRoute?.permission && !currentRoute.permission(userInfo)) {
+		throw redirect(303,  addFailMessage('/app', 'Bạn không có quyền truy cập'));
+	}
+
+	return {
+		user,
+		navList: navList
+            .filter(r => !r.permission || r.permission(userInfo))
+            .map(r => ({ 
+                name: r.name, 
+                route: r.route,
+                iconName: r.iconName
+            }))
+	};
+};

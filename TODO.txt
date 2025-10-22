@@ -4,9 +4,13 @@ DOING: zip downloading for KD
 - Improve security for passwordHash column in 
 
 
+- Access token (JWT) → short-lived (e.g. 1 hour)
+	- Stored in an HttpOnly cookie
+	- Used for normal API requests
 
-\copy members(name, role_id, usercode, generation, active, email, password_hash) FROM 'D:\,DOWNLOADS\hashed_output.csv' DELIMITER ',' CSV HEADER
+- Refresh token (DB) → long-lived (e.g. 7 days)
+	- Stored in another secure cookie
+	- Used to issue new access tokens
+	- Deletable → allows force logout
 
-\copy departments FROM 'D:\,DOWNLOADS\departments.csv' DELIMITER ',' CSV HEADER
 
-\copy member_departments FROM 'D:\,DOWNLOADS\member_departments.csv' DELIMITER ',' CSV HEADER

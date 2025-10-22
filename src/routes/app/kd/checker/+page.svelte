@@ -2,7 +2,6 @@
 	import toast from 'svelte-french-toast';
 
 	import { kdData } from './kddata.svelte';
-	import { currentUser } from '$lib/user.svelte';
 	import { goto } from '$app/navigation';
 
 	let TestURL = $state('');
@@ -15,7 +14,7 @@
 			const AId = params.get('AId') ?? '';
 			kdData.TokenCode = params.get('TokenCode') ?? '';
 			kdData.AId = AId;
-			kdData.UserName = currentUser.info.usercode;
+			kdData.UserName = params.get('UserCode') ?? '';
 
 			goto(`/app/kd/checker/${AId}`);
 		} catch (err) {

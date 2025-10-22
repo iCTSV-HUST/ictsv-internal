@@ -1,46 +1,44 @@
 <script lang="ts">
-	import { appData } from '$lib/appimportant.svelte';
 	import dayjs from 'dayjs';
 	import DepartmentDisplay from '../DepartmentDisplay.svelte';
 
-	import {
-		checkAttendance,
-		checkStreak,
-		createAttendance,
-		deleteAttendance,
-		saveAttendance,
-		lockAttendance
-	} from './api-attendance';
+	import { AttendanceManager } from './attendance.svelte';
 	import { download } from '$lib/utils';
+
+	import { memberSort } from '$lib/types';
+
+	const { data } = $props();
+	const activeMembers = data.activeMembers.sort(memberSort);
+
+	const myAttendances = new AttendanceManager(data.attendances ?? []);
 
 	let endTable = $state<HTMLDivElement>();
 
 	const DELETE_MODE = 1;
 	const LOCK_MODE = 2;
-
 	let usingMode = $state(0);
 
-	let loadOnce = false;
+	// let loadOnce = false;
 
-	$effect(() => {
-		if (appData.attendances.length > 0 && !loadOnce) {
-			loadOnce = true;
-			setTimeout(() => {
-				endTable?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-			}, 100);
-		}
-	});
+	// $effect(() => {
+	// 	if (appData.attendances.length > 0 && !loadOnce) {
+	// 		loadOnce = true;
+	// 		setTimeout(() => {
+	// 			endTable?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+	// 		}, 100);
+	// 	}
+	// });
 
 	function exportAttendanceCSV() {
 		let buffer =
 			'STT,Tên,MSSV,' +
-			appData.attendances.map((day) => 'DD ' + dayjs(day.date).format('DD/MM')).join(',') +
+			myAttendances.records.map((day) => 'DD ' + dayjs(day.date).format('DD/MM')).join(',') +
 			'\n';
 
-		for (const [index, member] of appData.members.entries()) {
+		for (const [index, member] of activeMembers.entries()) {
 			buffer += `${index + 1},${member.name},${member.usercode},`;
-			buffer += appData.attendances
-				.map((day) => (day.members?.includes(member.id) ? 1 : 0))
+			buffer += myAttendances.records
+				.map((day) => (day.memberIds?.includes(member.id) ? 1 : 0))
 				.join(',');
 			buffer += '\n';
 		}
@@ -59,7 +57,7 @@
 		</button>
 	</div>
 
-	<div class="border-2 border-neutral rounded-xl mx-8 overflow-scroll" style="width: 80vw;">
+	<div class="border-2 border-neutral rounded-xl mx-8 overflow-scroll">
 		<table class="table table-sm table-pin-rows border-separate border-spacing-0">
 			<thead>
 				<tr class="text-sm bg-base-300 z-[3]">
@@ -71,19 +69,19 @@
 						</div>
 					</th>
 
-					{#each appData.attendances as day, index (day.id)}
+					{#each myAttendances.records as day, index (day.date)}
 						<th class="p-0 text-center relative">
 							{#if usingMode === DELETE_MODE}
 								<!-- TODO: Make this a checkbox instead, so when clicking the Delete/Xoa button, we can select multiple days to delete at once (this also reduce chance of misclick) -->
 								<button
-									onclick={() => deleteAttendance(index)}
+									onclick={() => myAttendances.delete(index)}
 									class="absolute top-0 left-0 w-full h-full hover:bg-error/50"
 								>
 									{dayjs(day.date).format('DD/MM')}
 								</button>
 							{:else if usingMode === LOCK_MODE}
 								<button
-									onclick={() => lockAttendance(index, !day.locked)}
+									onclick={() => myAttendances.toggleLock(index)}
 									class="absolute top-0 left-0 w-full h-full hover:bg-warning/50"
 									class:bg-warning={day.locked}
 								>
@@ -97,7 +95,7 @@
 
 					<th class="p-0">
 						<button
-							onclick={() => createAttendance()}
+							onclick={() => myAttendances.create()}
 							style="min-width: var(--check-w);"
 							class="py-1 h-full w-full hover:bg-primary/50 text-2xl"
 						>
@@ -108,19 +106,19 @@
 					<th class="p-0 relative">
 						<div class="absolute top-0 h-full">
 							<button
-								onclick={() => (usingMode = usingMode === 0 ? DELETE_MODE : 0)}
-								class:bg-error={usingMode === DELETE_MODE}
-								class="p-3 h-full hover:bg-error/50"
-							>
-								Xoá
-							</button>
-
-							<button
 								onclick={() => (usingMode = usingMode === 0 ? LOCK_MODE : 0)}
 								class:bg-warning={usingMode === LOCK_MODE}
 								class="p-3 h-full hover:bg-warning/50"
 							>
 								Khoá chỉnh sửa
+							</button>
+
+							<button
+								onclick={() => (usingMode = usingMode === 0 ? DELETE_MODE : 0)}
+								class:bg-error={usingMode === DELETE_MODE}
+								class="p-3 h-full hover:bg-error/50"
+							>
+								Xoá
 							</button>
 						</div>
 						<div bind:this={endTable} style="width: var(--padded-w);"></div>
@@ -128,7 +126,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each appData.members as member, stt (member.id)}
+				{#each activeMembers as member, stt (member.id)}
 					<tr>
 						<td class="stt-cell bg-base-100">{stt + 1}</td>
 						<td class="name-cell bg-base-100">
@@ -136,14 +134,14 @@
 								{member.name}
 								<span
 									><DepartmentDisplay
-										depts={member.department}
+										depts={member.departments}
 										short={true}
 									/></span
 								>
 							</div>
 						</td>
 
-						{#each appData.attendances as day, index (day.id)}
+						{#each myAttendances.records as day, index (day.date)}
 							<td class="p-0">
 								<div
 									style="min-width: var(--check-w);"
@@ -151,16 +149,16 @@
 								>
 									<input
 										type="checkbox"
-										checked={checkAttendance(index, member.id)}
+										checked={myAttendances.isCheckedIn(index, member.id)}
 										value={member.id}
-										bind:group={appData.attendances[index].members}
+										bind:group={myAttendances.records[index].memberIds}
 										class="checkbox checkbox-success rounded-full steps"
-										class:steps={checkStreak(index, member.id)}
+										class:steps={myAttendances.hasStreak(index, member.id)}
 										class:checkbox-locked={day.locked}
 										disabled={day.locked}
 										onclick={() => {
 											if (!day.locked) {
-												saveAttendance(index);
+												myAttendances.save(index);
 											}
 										}}
 									/>

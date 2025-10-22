@@ -1,32 +1,7 @@
 <script lang="ts">
-	// import { appData, refreshAppData } from "$lib/appimportant.svelte";
-	// import { logout } from "$lib/pocketbase";
-	import toast from 'svelte-french-toast';
-
 	import { page } from '$app/state';
 
 	const { data, children } = $props();
-
-	// Get data once
-	// TODO: Clean up
-	// if (appData.members.length === 0) {
-	// 	toast.promise(
-	// 		refreshAppData(), {
-	// 		loading: "Loading...",
-	// 		success: "Loaded!",
-	// 		error: e => {
-	// 			const err = e as ClientResponseError;
-	// 			console.log(err);
-	// 			return err.message;
-	// 		},
-	// 	});
-	// }
-
-	if (data.message) {
-		toast.success(data.message);
-	}
-
-	function logout() {}
 
 	import CheckIcon from 'lucide-svelte/icons/circle-check-big';
 	import ListCheckIcon from 'lucide-svelte/icons/list-checks';
@@ -48,9 +23,10 @@
 
 <div class="flex min-h-screen">
 	<!-- Sidebar -->
-	<aside class="w-64 bg-base-200 text-base-content">
-		<div class="p-4 text-xl font-semibold">Sidebar</div>
-		<nav class="navigation-sidebar p-4">
+	<aside class="w-64 lg:w-72 bg-base-200 text-base-content flex flex-col justify-between p-4">
+		<nav class="navigation-sidebar">
+			<h3 class="pt-0 p-4 text-xl font-semibold">Sidebar</h3>
+
 			<ul class="flex flex-col gap-2">
 				{#each navList as nav}
 					<li>
@@ -64,10 +40,12 @@
 						</a>
 					</li>
 				{/each}
-
-				<li><button class="hover:bg-error w-full" onclick={logout}> Đăng xuất </button></li>
 			</ul>
 		</nav>
+
+		<a href="/logout" class="logout-btn text-center border-error border-2 border-opacity-50 hover:bg-error w-full">
+			Đăng xuất
+		</a>
 	</aside>
 
 	<!-- Main content -->
@@ -78,7 +56,8 @@
 
 <style>
 	.navigation-sidebar li a,
-	button {
+
+	.logout-btn {
 		display: block;
 		border-radius: 0.75rem;
 		padding: 0.5rem 1rem; /* Padding inside menu items */

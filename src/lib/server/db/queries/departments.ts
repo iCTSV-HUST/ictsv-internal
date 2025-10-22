@@ -1,5 +1,6 @@
 import { db } from "../db";
-import { departmentsTable, memberDepartmentsTable } from "../schema";
+import { eq } from 'drizzle-orm';
+import { memberDepartmentsTable } from "../schema";
 
 export async function findMemberDepartmentsById(memberId: number) {
 	const departments = await db

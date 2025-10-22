@@ -1,14 +1,17 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import '../app.css';
 
-	import { Toaster } from 'svelte-french-toast';
+	import toast, { Toaster } from 'svelte-french-toast';
 
-	const {
-		children
-	}: {
-		children: Snippet;
-	} = $props();
+	const { data, children } = $props();
+
+	if (data.message) {
+		toast.success(data.message);
+	}
+
+	if (data.failMessage) {
+		toast.error(data.failMessage);
+	}
 </script>
 
 <Toaster />

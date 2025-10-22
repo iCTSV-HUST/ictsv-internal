@@ -1,48 +1,75 @@
-import { mapMemberRole } from '$lib/server/types';
+import { roleMap, type Member, type RoleId } from '$lib/types';
 import { db } from '../db';
 import { membersTable } from '../schema';
-import { eq, getTableColumns } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
-const {
-	passwordHash, 
-	createdAt,
-	updatedAt,
-	lastLoginAt, 
-	...rest
-} = getTableColumns(membersTable);
-
-const publicCols = { ...rest }
-
-export async function findMemberByUsercode(usercode: string) {
-	const [member] = await db
-		.select()
-		.from(membersTable)
-		.where(eq(membersTable.usercode, usercode))
-		.limit(1);
-	return member;
+function mapMemberRole<T extends { roleId: string }>(member: T) {
+	return {
+		...member,
+		roleId: member.roleId as RoleId,
+		role: roleMap[member.roleId as RoleId]
+	};
 }
 
+function mapMemberRoleDepartments<
+	T extends {
+		roleId: string;
+		departments: {
+			department: {
+				name: string;
+			};
+		}[];
+	}
+>(member: T) {
+	return {
+		...member,
+		departments: member.departments.map((md) => md.department.name),
+		roleId: member.roleId as RoleId,
+		role: roleMap[member.roleId as RoleId]
+	};
+}
 
-// export async function findMemberByEmail(email: string) {
-// 	const [member] = await db
-// 		.select(publicCols)
-// 		.from(membersTable)
-// 		.where(eq(membersTable.email, email))
-// 		.limit(1);
-// 	return member;
-// }
+export async function findMemberByUsercode(usercode: string) {
+	const member = await db.query.membersTable.findFirst({
+		columns: {
+			createdAt: false,
+			updatedAt: false,
+			lastLoginAt: false
+		},
+		with: {
+			departments: {
+				columns: {}, // Exclude junction table columns
+				with: {
+					department: true // Get actual department data
+				}
+			}
+		},
+		where: eq(membersTable.usercode, usercode)
+	});
 
-// export async function findMemberById(id: number) {
-// 	const [member] = await db
-// 		.select(publicCols)
-// 		.from(membersTable)
-// 		.where(eq(membersTable.id, id))
-// 		.limit(1);
-// 	return member;
-// }
+	return member ? mapMemberRoleDepartments(member) : null;
+}
 
+export async function findMemberById(memberId: number) {
+	const member = await db.query.membersTable.findFirst({
+		columns: {
+			createdAt: false,
+			updatedAt: false,
+			lastLoginAt: false
+		},
+		with: {
+			departments: {
+				columns: {}, // Exclude junction table columns
+				with: {
+					department: true // Get actual department data
+				}
+			}
+		},
+		where: eq(membersTable.id, memberId)
+	});
 
-
+	return member ? mapMemberRoleDepartments(member) : null;
+}
 
 export async function updateLastLogin(memberId: number) {
 	await db
@@ -51,19 +78,37 @@ export async function updateLastLogin(memberId: number) {
 		.where(eq(membersTable.id, memberId));
 }
 
-export async function createMember(data: {
-	name: string;
-	roleId: string;
-	usercode: string;
-	generation: string;
-	email: string;
-	passwordHash: string;
-}) {
-	const [member] = await db.insert(membersTable).values(data).returning();
-	return mapMemberRole(member);
-}
+// export async function createMember(data: {
+// 	name: string;
+// 	roleId: string;
+// 	usercode: string;
+// 	generation: string;
+// 	email: string;
+// 	passwordHash: string;
+// }) {
+// 	const [member] = await db.insert(membersTable).values(data).returning();
 
-export async function getMembers() {
-	const members = await db.select(publicCols).from(membersTable).where(eq(membersTable.active, true));
-	return members.map(mapMemberRole);
+// 	return mapMemberRole(member);
+// }
+
+export async function getActiveMembers(): Promise<Member[]> {
+	const members = await db.query.membersTable.findMany({
+		columns: {
+			createdAt: false,
+			updatedAt: false,
+			lastLoginAt: false,
+			passwordHash: false
+		},
+		with: {
+			departments: {
+				columns: {}, // Exclude junction table columns
+				with: {
+					department: true // Get actual department data
+				}
+			}
+		},
+		where: eq(membersTable.active, true)
+	});
+
+	return members.map(mapMemberRoleDepartments);
 }

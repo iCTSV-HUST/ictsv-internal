@@ -1,38 +1,62 @@
 import { db } from '../db';
 import { attendanceTable } from '../schema';
-import { gte } from 'drizzle-orm';
+import { eq, gte } from 'drizzle-orm';
 
-// Bulk operations
-export async function bulkCheckInToday(memberIds: number[]) {
-	if (memberIds.length === 0) return [];
+const mapAttendance = (r: {
+	date: string;
+	memberIds: any;
+	locked: boolean;
+}) => ({
+	date: r.date,
+	memberIds: (r.memberIds as number[]) || [],
+	locked: r.locked
+})
 
-	const today = new Date().toISOString().split('T')[0];
-	const memberList = memberIds.sort();
+export async function getAttendancesSince(since: Date) {
+	const checkingDate = since.toISOString().split('T')[0];
 
-	return await db
-		.insert(attendanceTable)
-		.values({
-			date: today,
-			checkins: memberList
-		})
-		.onConflictDoUpdate({
-			target: attendanceTable.date,
-			set: {
-				checkins: memberList,
-				updatedAt: new Date()
-			}
-		});
-}
-
-export async function getCheckinsSince(since: Date) {
 	const records = await db
 		.select()
 		.from(attendanceTable)
-		.where(gte(attendanceTable.date, since.toISOString()))
+		.where(gte(attendanceTable.date, checkingDate))
 		.orderBy(attendanceTable.date);
 
-	return records.map((r) => ({
-		date: r.date,
-		members: r.checkins as number[] // Drizzle returns parsed JSON
-	}));
+	return records.map(mapAttendance);
+}
+
+export async function createAttendance(date: string) {
+	const [record] = await db
+		.insert(attendanceTable)
+		.values({ date, memberIds: [] })
+		.returning();
+
+	return mapAttendance(record);
+}
+
+export async function updateAttendance(date: string, memberIds: number[]) {
+	const [record] = await db
+		.update(attendanceTable)
+		.set({ memberIds, updatedAt: new Date() })
+		.where(eq(attendanceTable.date, date))
+		.returning();
+
+	return {
+		date: record.date,
+		memberIds: (record.memberIds as number[]) || [],
+		locked: record.locked
+	};
+}
+
+export async function deleteAttendance(date: string) {
+	await db.delete(attendanceTable).where(eq(attendanceTable.date, date));
+}
+
+export async function lockAttendance(date: string, locked: boolean) {
+	const [record] = await db
+		.update(attendanceTable)
+		.set({ locked, updatedAt: new Date() })
+		.where(eq(attendanceTable.date, date))
+		.returning();
+
+	return mapAttendance(record);
 }

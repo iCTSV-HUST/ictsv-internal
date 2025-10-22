@@ -1,8 +1,7 @@
+import * as schema from './schema'
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
-import { config } from 'dotenv';
+import { env } from '$env/dynamic/private';
 
-config({ path: '.env' });
-
-const sql = neon(process.env.DATABASE_URL!);
-export const db = drizzle({ client: sql, casing: 'snake_case' });
+const sql = neon(env.DATABASE_URL!);
+export const db = drizzle({ schema, client: sql, casing: 'snake_case' });

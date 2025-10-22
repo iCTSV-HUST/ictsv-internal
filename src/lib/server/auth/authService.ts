@@ -1,60 +1,119 @@
-import { findMemberByUsercode, updateLastLogin } from '../db/queries/members';
-import { createSession, deleteSession, findSessionById } from '../db/queries/sessions';
-import { memberPublicize } from '../types';
+import type { Cookies } from '@sveltejs/kit';
+import { findMemberById, findMemberByUsercode, updateLastLogin } from '../db/queries/members';
+import { createRefreshToken, revokeRefreshToken, verifyRefreshToken } from '../db/queries/refreshTokens';
+import type { Member } from '../../types';
+import { createAccessToken } from './jwt';
 import { verifyPassword } from './password';
-import { generateSessionId, getSessionExpiry, isSessionExpired } from './session';
 
-export async function login(credentials: {
-	usercode: string;
-	password: string;
-	ipAddress?: string;
-	userAgent?: string;
-}) {
-	const member = await findMemberByUsercode(credentials.usercode);
+// Cookies related stuffs
+export const AUTH_CONFIG = {
+	accessToken: {
+		maxAge: 60 * 60		// 1h
+	},
+	refreshToken: {
+		maxAge: 7 * 24 * 60 * 60	// 7 days
+	}
+} as const;
 
-	if (!member) {
+const COOKIE_OPTIONS = {
+	httpOnly: true,
+	secure: true,
+	sameSite: 'lax',
+	path: '/'
+} as const;
+
+export function clearAuthCookies(cookies: Cookies) {
+	cookies.delete('access_token', { path: '/' });
+	cookies.delete('refresh_token', { path: '/' });
+}
+
+
+export async function login(
+	credentials: {
+		usercode: string;
+		password: string;
+		ipAddress?: string;
+		userAgent?: string;
+	},
+	cookies: Cookies
+): Promise<{ member: Member; }> {
+	const fullMember = await findMemberByUsercode(credentials.usercode);
+
+	if (!fullMember) {
 		throw new Error('Invalid credentials');
 	}
 
-	if (!member.active && member.roleId != 'dev') {
+	if (!fullMember.active && fullMember.roleId != 'dev') {
 		throw new Error('Account is deactivated');
 	}
 
-	const isValidPassword = await verifyPassword(credentials.password, member.passwordHash);
+	const { passwordHash, ...member } = fullMember
+
+	const isValidPassword = await verifyPassword(credentials.password, passwordHash);
 
 	if (!isValidPassword) {
 		throw new Error('Invalid crendentials');
 	}
 
-	// Valid user, create session
-	const session = await createSession({
-		id: generateSessionId(),
-		memberId: member.id,
-		expiresAt: getSessionExpiry(7), // Expire in 7 days
-		ipAddress: credentials.ipAddress,
-		userAgent: credentials.userAgent
+	// JWT part
+	const accessToken = await createAccessToken(member);
+	const refreshToken = await createRefreshToken(
+		member.id,
+		credentials.ipAddress,
+		credentials.userAgent
+	);
+
+	// Set cookies
+	cookies.set('access_token', accessToken, {
+		...COOKIE_OPTIONS,
+		maxAge: AUTH_CONFIG.accessToken.maxAge
 	});
+
+	cookies.set('refresh_token', refreshToken, {
+		...COOKIE_OPTIONS,
+		maxAge: AUTH_CONFIG.refreshToken.maxAge
+	});
+	console.log("Cookie set")
+	// End of JWT related part
 
 	await updateLastLogin(member.id);
 
-	return { session, member: memberPublicize(member) };
+	return { member };
 }
 
-export async function validateSession(sessionId: string) {
-	const session = await findSessionById(sessionId);
+export async function refreshAccessToken(cookies: Cookies) {
+	const refreshToken = cookies.get('refresh_token');
 
-	if (!session) {
-		return null;
+	if (refreshToken) {
+		const memberId = await verifyRefreshToken(refreshToken);
+		
+		if (memberId) {
+			const member = await findMemberById(memberId);
+			
+			if (member && (member.active || member.roleId === 'dev')) {
+				const accessToken = await createAccessToken(member);
+
+				cookies.set('access_token', accessToken, {
+					...COOKIE_OPTIONS,
+					maxAge: AUTH_CONFIG.accessToken.maxAge
+				});
+
+				return member;
+			}
+		}
+
+		clearAuthCookies(cookies);
 	}
 
-	if (isSessionExpired(session.expiresAt)) {
-		await deleteSession(sessionId);
-		return null;
-	}
-
-	return session;
+	return null;
 }
 
-export async function logout(sessionId: string) {
-	await deleteSession(sessionId);
+export async function authLogout(cookies: Cookies) {
+	const refreshTokenId = cookies.get('refresh_token');
+	
+	if (refreshTokenId) {
+		await revokeRefreshToken(refreshTokenId);
+	}
+
+	clearAuthCookies(cookies);
 }

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import toast from 'svelte-french-toast';
 
 	import IDIcon from 'lucide-svelte/icons/id-card';
@@ -20,9 +19,9 @@
 	});
 </script>
 
-<div class="flex flex-col items-center h-full w-full">
+<div class="mt-20 flex flex-col items-center h-full w-full">
 	<h2 class="mt-2 text-center text-3xl font-bold tracking-tight text-base-content">
-		Login to your account
+		Đăng nhập?
 	</h2>
 	<form class="flex flex-col items-center space-y-2 w-96 pt-4" method="POST">
 		<InputLabel>
@@ -60,7 +59,7 @@
 				class="btn btn-primary w-full"
 				disabled={loading || formData.usercode === '' || formData.password === ''}
 			>
-				Login
+				Đăng nhập
 			</button>
 		</div>
 	</form>

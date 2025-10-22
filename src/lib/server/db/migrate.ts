@@ -2,8 +2,11 @@
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 import { migrate } from 'drizzle-orm/neon-http/migrator';
+
+// Using dotenv because running command with pnpm does not resolve $env (vite doesn't run)
 import { config } from 'dotenv';
 config({ path: '.env' });
+
 const sql = neon(process.env.DEVELOPER_ONLY_DATABASE_URL!);
 const db = drizzle({ client: sql, casing: 'snake_case' });
 const main = async () => {

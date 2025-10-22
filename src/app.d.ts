@@ -1,8 +1,12 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
+import { PermissionCheckMember } from '$lib/types';
+
 declare global {
 	namespace App {
-		interface Locals {}
+		interface Locals {
+			currentUser?: PermissionCheckMember;
+		}
 
 		interface Platform {
 			env: {

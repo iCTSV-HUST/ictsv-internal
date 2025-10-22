@@ -1,8 +1,8 @@
+import { relations } from 'drizzle-orm';
 import { crudPolicy } from 'drizzle-orm/neon';
 import {
 	integer,
 	pgTable,
-	serial,
 	text,
 	varchar,
 	numeric,
@@ -39,28 +39,22 @@ export const membersTable = pgTable(
 			.$onUpdate(() => new Date()),
 		lastLoginAt: timestamp()
 	},
-	(t) => [
-		// Restrict editor to read-only for this table
-		crudPolicy({ role: editor, read: true, modify: true })
-	]
+	(t) => [crudPolicy({ role: editor, read: true, modify: true })]
 );
 
-export const sessionsTable = pgTable(
-	'sessions',
+export const refreshTokensTable = pgTable(
+	'refresh_tokens',
 	{
-		id: text().primaryKey(),
+		tokenId: text().primaryKey(),
 		memberId: integer()
 			.notNull()
 			.references(() => membersTable.id, { onDelete: 'cascade' }),
-		expiresAt: timestamp().notNull(),
+		expiresAt: timestamp().notNull(), // expiry datetime
 		createdAt: timestamp().notNull().defaultNow(),
-		ipAddress: varchar({ length: 45 }), // For security log
-		userAgent: text() // For tracking devices
+		ipAddress: text(),
+		userAgent: text()
 	},
-	(t) => [
-		// Restrict editor to read-only for this table
-		crudPolicy({ role: editor, read: true, modify: true })
-	]
+	(t) => [crudPolicy({ role: editor, read: true, modify: true })]
 );
 
 export const departmentsTable = pgTable(
@@ -94,26 +88,49 @@ export const memberDepartmentsTable = pgTable(
 export type InsertMember = typeof membersTable.$inferInsert;
 export type SelectMember = typeof membersTable.$inferSelect;
 
-export type InsertSession = typeof sessionsTable.$inferInsert;
-export type SelectSession = typeof sessionsTable.$inferSelect;
-
 export const attendanceTable = pgTable(
 	'attendance',
 	{
-		date: date('date').notNull().primaryKey(),
+		date: date().notNull().primaryKey(),
 
 		// Store array of member IDs that checked in on this date
-		checkins: jsonb('checkins').notNull().default([]),
-
-		createdAt: timestamp('created_at').notNull().defaultNow(),
-
+		memberIds: jsonb().notNull().default([]),
+		locked: boolean().notNull().default(false),
 		updatedAt: timestamp('updated_at').notNull().defaultNow()
 	},
-	(t) => [
-		// Restrict editor to read-only for this table
-		crudPolicy({ role: editor, read: true, modify: true })
-	]
+	(t) => [crudPolicy({ role: editor, read: true, modify: true })]
 );
 
 export type InsertAttendance = typeof attendanceTable.$inferInsert;
 export type SelectAttendance = typeof attendanceTable.$inferSelect;
+
+// Relationship stuffs for querying
+
+// Members-departments relations
+export const membersRelations = relations(membersTable, ({ many }) => ({
+	departments: many(memberDepartmentsTable)
+}));
+
+export const departmentsRelations = relations(departmentsTable, ({ many }) => ({
+	members: many(memberDepartmentsTable)
+}));
+
+export const memberDepartmentsRelations = relations(memberDepartmentsTable, ({ one }) => ({
+	member: one(membersTable, {
+		fields: [memberDepartmentsTable.memberId],
+		references: [membersTable.id]
+	}),
+	department: one(departmentsTable, {
+		fields: [memberDepartmentsTable.departmentId],
+		references: [departmentsTable.id]
+	})
+}));
+
+// Members-refreshtoken relations
+
+export const refreshTokenMembersRelations = relations(refreshTokensTable, ({ one }) => ({
+	members: one(membersTable, {
+		fields: [refreshTokensTable.memberId],
+		references: [membersTable.id]
+	})
+}));
