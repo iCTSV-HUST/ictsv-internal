@@ -1,11 +1,10 @@
 import dayjs from 'dayjs';
 import { db } from '../db';
 import { eq } from 'drizzle-orm';
-import { randomUUID } from 'crypto';
 import { refreshTokensTable } from '../schema';
 
 export async function createRefreshToken(memberId: number, ipAddress?: string, userAgent?: string) {
-	const tokenId = randomUUID();
+	const tokenId = crypto.randomUUID();
 	const expiresAt = dayjs().add(7, 'day').toDate();
 
 	await db.insert(refreshTokensTable).values({
