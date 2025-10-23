@@ -40,7 +40,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@neondatabase/serverless": "1.0.1",
+    "@neondatabase/serverless": "^1.0.1",
     "bcrypt": "^6.0.0",
     "dayjs": "^1.11.18",
     "dotenv": "^17.2.2",
