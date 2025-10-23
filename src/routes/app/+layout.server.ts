@@ -5,7 +5,6 @@ import { RoleLevel, roleMap, type RoleId } from '$lib/types';
 type Route = {
 	name: string;
 	route: string;
-	iconName?: string;
 
 	permission?: (member: { level: number; departments: string[] }) => boolean;
 };
@@ -18,20 +17,23 @@ const navList: Route[] = [
 	{
 		name: 'Điểm danh',
 		route: '/app/attendance-check',
-        iconName: 'attendance',
+		permission: ({ level, departments }) =>
+			departments.includes('Tiểu ban') || level <= RoleLevel.ToPho
+	},
+    {
+		name: 'Quản lý thành viên',
+		route: '/app/tieu-ban',
 		permission: ({ level, departments }) =>
 			departments.includes('Tiểu ban') || level <= RoleLevel.ToPho
 	},
 	{
 		name: 'Kiểm duyệt - Duyệt MC',
 		route: '/app/kd/checker',
-        iconName: 'kd',
 		permission: ({ departments }) => departments.includes('Mảng Kiểm duyệt')
 	},
 	{
 		name: 'Tài khoản',
 		route: '/app/profile',
-        iconName: 'profile',
 	}
 ];
 
@@ -61,7 +63,6 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
             .map(r => ({ 
                 name: r.name, 
                 route: r.route,
-                iconName: r.iconName
             }))
 	};
 };

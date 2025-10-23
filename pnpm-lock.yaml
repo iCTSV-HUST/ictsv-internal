@@ -102,6 +102,9 @@ importers:
       svelte-confetti:
         specifier: ^2.3.2
         version: 2.3.2(svelte@5.38.8)
+      svelte-multiselect:
+        specifier: ^11.2.4
+        version: 11.2.4(svelte@5.38.8)
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17
@@ -1789,6 +1792,11 @@ packages:
     peerDependencies:
       svelte: ^5.0.0
 
+  svelte-multiselect@11.2.4:
+    resolution: {integrity: sha512-VFwK2pr6AIamDwiFxqYsVBHbNRevi355EkZnlyoJkcdYeCcPFl+FX1WVICOseQ3c4Nh4ukzb2sp8OxB1xlxHzg==}
+    peerDependencies:
+      svelte: ^5.35.6
+
   svelte-virtuallists@1.4.2:
     resolution: {integrity: sha512-ZvBU1BMmt2uY/spjuZn+XOtHVxOpU/Cfiy+dajxrOXe6KysjAY2O0R1cLonEGl+/AMy0or6/dO+KA3/C6R3l2A==}
     peerDependencies:
@@ -3302,6 +3310,10 @@ snapshots:
     dependencies:
       svelte: 5.38.8
       svelte-writable-derived: 3.1.1(svelte@5.38.8)
+
+  svelte-multiselect@11.2.4(svelte@5.38.8):
+    dependencies:
+      svelte: 5.38.8
 
   svelte-virtuallists@1.4.2(svelte@5.38.8):
     dependencies:

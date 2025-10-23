@@ -4,20 +4,22 @@
 	const { data, children } = $props();
 
 	import CheckIcon from 'lucide-svelte/icons/circle-check-big';
+	import BookUserIcon from 'lucide-svelte/icons/book-user';
 	import ListCheckIcon from 'lucide-svelte/icons/list-checks';
 	import UserIcon from 'lucide-svelte/icons/user';
 
 	const navIcons: {
 		[key: string]: any;
 	} = {
-		attendance: CheckIcon,
-		kd: ListCheckIcon,
+		'attendance-check': CheckIcon,
+		'tieu-ban': BookUserIcon,
+		'kd/checker': ListCheckIcon,
 		profile: UserIcon
 	};
 
 	const navList = data.navList.map((r) => ({
 		...r,
-		icon: r.iconName ? navIcons[r.iconName] : null
+		icon: navIcons[r.route.replace('/app/', '')]
 	}));
 </script>
 
@@ -43,7 +45,10 @@
 			</ul>
 		</nav>
 
-		<a href="/logout" class="logout-btn text-center border-error border-2 border-opacity-50 hover:bg-error w-full">
+		<a
+			href="/logout"
+			class="logout-btn text-center border-error border-2 border-opacity-50 hover:bg-error w-full"
+		>
 			Đăng xuất
 		</a>
 	</aside>
@@ -56,7 +61,6 @@
 
 <style>
 	.navigation-sidebar li a,
-
 	.logout-btn {
 		display: block;
 		border-radius: 0.75rem;

@@ -51,13 +51,13 @@
 
 <div class="h-full flex flex-col">
 	<div class="flex gap-2">
-		<h3 class="ml-4 mb-2 text-2xl font-semibold">Điểm danh</h3>
+		<h3 class="ml-4 mb-4 text-2xl font-semibold">Điểm danh</h3>
 		<button class="btn btn-sm bg-base-100 border-0" onclick={exportAttendanceCSV}>
 			<DownloadIcon />
 		</button>
 	</div>
 
-	<div class="border-2 border-neutral rounded-xl mx-8 overflow-scroll">
+	<div class="border-2 border-neutral rounded-xl mx-4 overflow-scroll">
 		<table class="table table-sm table-pin-rows border-separate border-spacing-0">
 			<thead>
 				<tr class="text-sm bg-base-300 z-[3]">
@@ -184,8 +184,8 @@
 		--padded-w: calc(80vw - var(--stt-w) - var(--name-w) - var(--check-w) * 4 - 4rem);
 	}
 	table tbody td {
-		border-left: 1px solid oklch(var(--b2));
-		border-bottom: 1px solid oklch(var(--b2));
+		border-left: 1px solid oklch(var(--b3));
+		border-bottom: 1px solid oklch(var(--b3));
 	}
 
 	table thead th {
