@@ -41,7 +41,7 @@ const navList: Route[] = [
 export const load: LayoutServerLoad = async ({ locals, url }) => {
 	const user = locals.currentUser;
 
-	if (!user) throw redirect(303, failMessageURL('/login', 'Bạn chưa đăng nhập'));
+	if (!user) throw redirect(303, failMessageURL('/login', 'Người dùng chưa đăng nhập'));
 
     const userInfo = {
         level: roleMap[user.roleId].level,

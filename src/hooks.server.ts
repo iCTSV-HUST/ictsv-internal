@@ -1,4 +1,5 @@
 import { type Handle } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import { verifyAccessToken } from "$lib/server/auth/jwt";
 import { refreshAccessToken } from '$lib/server/auth/authService';
 import { failMessageURL } from '$lib/utils';
@@ -11,7 +12,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const member = await verifyAccessToken(accessToken);
 		if (member) {
 			event.locals.currentUser = member;
-			return resolve(event);
+			return await resolve(event);
 		}
 	}
 
@@ -19,7 +20,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     const refreshedMember = await refreshAccessToken(event.cookies);
     if (refreshedMember) {
         event.locals.currentUser = refreshedMember;
-		return resolve(event);
+		return await resolve(event);
     }
 
 	// If not at public path and no user, block access
@@ -27,8 +28,15 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const publicPaths = ['/login', '/register', '/logout', '/']; 
 
 	if (!publicPaths.includes(pathname)) {
-		return Response.redirect(new URL(failMessageURL('/login', 'Bạn chưa đăng nhập'), event.url), 303);
+		if (pathname.startsWith('/api/')) {
+			return new Response('Unauthorized', { status: 401 });
+		}
+		
+		return Response.redirect(
+			failMessageURL('/login', 'Bạn chưa đăng nhập'),
+			303
+		);
 	}
 
-	return resolve(event);
+	return await resolve(event);
 };
