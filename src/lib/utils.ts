@@ -1,5 +1,5 @@
 export function failMessageURL(url: string, message: string) {
-	return `${url}?message=${encodeURIComponent(message)}`
+	return `${url}?failMessage=${encodeURIComponent(message)}`
 }
 
 
