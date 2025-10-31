@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import dayjs from 'dayjs';
-	import DepartmentDisplay from '../DepartmentDisplay.svelte';
+	import DepartmentDisplay from '../../DepartmentDisplay.svelte';
 
 	import { AttendanceManager } from './attendance.svelte';
 	import { download } from '$lib/utils';
@@ -10,7 +11,12 @@
 	const { data } = $props();
 	const activeMembers = data.activeMembers.sort(memberSort);
 
-	const myAttendances = new AttendanceManager(data.attendances ?? []);
+	// Initialize as empty
+	const myAttendances = new AttendanceManager();
+	
+	onMount(async () => {
+		await myAttendances.getRealData()
+	});
 
 	let endTable = $state<HTMLDivElement>();
 
@@ -47,14 +53,30 @@
 	}
 
 	import DownloadIcon from 'lucide-svelte/icons/download';
+
 </script>
 
 <div class="h-full flex flex-col">
-	<div class="flex gap-2">
-		<h3 class="ml-4 mb-4 text-2xl font-semibold">Điểm danh</h3>
-		<button class="btn btn-sm bg-base-100 border-0" onclick={exportAttendanceCSV}>
-			<DownloadIcon />
-		</button>
+	<div class="flex justify-between ml-4 mr-8">
+		<div class="flex gap-2 items-center mb-4">
+			<h3 class="text-2xl font-semibold">Điểm danh</h3>
+			<button class="btn btn-sm bg-base-100 border-0" onclick={exportAttendanceCSV}>
+				<DownloadIcon />
+			</button>
+		</div>
+
+
+		<div class="flex gap-2 items-center font-semibold">
+			{#if !myAttendances.isSaved}
+				<span>Đang lưu</span>
+				<span class="loading loading-spinner loading-sm text-success"></span>
+			{:else}
+				<span>Đã lưu</span>
+				<input type="checkbox" checked disabled
+				 class="checkbox checkbox-sm checkbox-success rounded-full !opacity-100" />
+			{/if}
+		</div>
+
 	</div>
 
 	<div class="border-2 border-neutral rounded-xl mx-4 overflow-scroll">

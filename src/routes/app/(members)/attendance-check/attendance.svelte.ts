@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import toast from 'svelte-french-toast';
 
 interface AttendanceRecord {
@@ -8,10 +9,32 @@ interface AttendanceRecord {
 
 export class AttendanceManager {
 	records = $state<AttendanceRecord[]>([]);
+	isSaved = $state(true);
 	private saveTimeouts: Record<string, NodeJS.Timeout> = {};
 
-	constructor(initialRecords: AttendanceRecord[]) {
-		this.records = initialRecords;
+	constructor(initialRecords?: AttendanceRecord[]) {
+		this.records = initialRecords ?? [];
+	}
+
+	async getRealData() {
+		const threeWeeksAgo = dayjs().subtract(3, 'week').format('YYYY-MM-DD');
+
+		this.records = await toast.promise(
+			(async () => {
+				const res = await fetch(`/api/attendance?since=${threeWeeksAgo}`);
+
+				if (!res.ok) {
+					throw new Error(`Failed to fetch attendance: ${res.statusText}`);
+				}
+
+				return await res.json(); // ✅ Yes, await is required
+			})(),
+			{
+				loading: 'Đang lấy dữ liệu...',
+				success: 'Đã lấy dữ liệu!',
+				error: (e) => e.message
+			}
+		);
 	}
 
 	private toastRequest(url: string, method: string, body?: any, successMsg?: string) {
@@ -24,7 +47,7 @@ export class AttendanceManager {
 
 		return toast.promise(
 			fetch(url, options).then((res) => {
-				if (!res.ok) throw new Error('Request failed');
+				if (!res.ok) throw new Error(`Lỗi: ${res.statusText}`);
 				return res.json();
 			}),
 			{
@@ -45,27 +68,45 @@ export class AttendanceManager {
 	}
 
 	save(dayIndex: number) {
+		this.isSaved = false;
 		const chosenDate = this.records[dayIndex].date;
-		const memberIds = this.records[dayIndex].memberIds;
 		clearTimeout(this.saveTimeouts[chosenDate]);
 
 		this.saveTimeouts[chosenDate] = setTimeout(() => {
-			this.toastRequest(`/api/attendance/${chosenDate}`, 'PATCH', { memberIds }, 'Đã lưu!');
-		}, 5000);
+			// Saving UI is determined by this.isSaved
+			(async () => {
+				const memberIds = this.records[dayIndex].memberIds;
+
+				const res = await fetch(`/api/attendance/${chosenDate}`, {
+					method: 'PATCH',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ memberIds })
+				});
+				
+				if (!res.ok) {
+					toast.error(`Lỗi: ${res.statusText}`);
+				}
+			})();
+
+			this.isSaved = true;
+		}, 4000);
 	}
 
 	async create() {
 		const date = new Date().toISOString().split('T')[0];
+
+		const exists = this.records.find((r) => r.date === date);
+		if (exists) {
+			toast.error("Đã điểm danh hôm nay")
+			return
+		}
 
 		const newRecord = (await this.toastRequest('/api/attendance', 'POST', {
 			date,
 			memberIds: []
 		})) as AttendanceRecord;
 
-		const exists = this.records.find((r) => r.date === date);
-		if (!exists) {
-			this.records.push(newRecord);
-		}
+		this.records.push(newRecord);
 	}
 
 	async delete(dayIndex: number) {

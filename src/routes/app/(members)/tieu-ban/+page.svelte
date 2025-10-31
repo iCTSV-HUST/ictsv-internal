@@ -1,13 +1,10 @@
 <script lang="ts">
 	import { memberSort, roleMap } from '$lib/types';
-	import DepartmentDisplay from '../DepartmentDisplay.svelte';
+	import DepartmentDisplay from '../../DepartmentDisplay.svelte';
 
     const { data } = $props();
 
-    let memberList = $state(
-		data.activeMembers
-			.sort(memberSort)
-	);
+    let memberList = $state(data.activeMembers.sort(memberSort));
 
 	import MultiSelect from 'svelte-multiselect'
 
