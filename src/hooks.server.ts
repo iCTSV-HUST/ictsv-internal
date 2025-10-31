@@ -33,7 +33,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 		
 		return Response.redirect(
-			failMessageURL('/login', 'Bạn chưa đăng nhập'),
+			new URL(failMessageURL('/login', 'Bạn chưa đăng nhập'), event.url).href,
 			303
 		);
 	}
