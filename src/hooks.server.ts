@@ -1,4 +1,5 @@
 import { type Handle } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import { verifyAccessToken } from "$lib/server/auth/jwt";
 import { refreshAccessToken } from '$lib/server/auth/authService';
 import { failMessageURL } from '$lib/utils';
@@ -27,7 +28,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const publicPaths = ['/login', '/register', '/logout', '/']; 
 
 	if (!publicPaths.includes(pathname)) {
-		return Response.redirect(new URL(failMessageURL('/login', 'Bạn chưa đăng nhập'), event.url), 303);
+		if (pathname.startsWith('/api/')) {
+			return new Response('Unauthorized', { status: 401 });
+		}
+		throw redirect(303, failMessageURL('/login', 'Bạn chưa đăng nhập'));
 	}
 
 	return resolve(event);
