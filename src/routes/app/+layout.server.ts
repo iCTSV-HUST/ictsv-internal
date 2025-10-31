@@ -1,6 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 import { RoleLevel, roleMap, type RoleId } from '$lib/types';
+import { failMessageURL } from '$lib/utils';
 
 type Route = {
 	name: string;
@@ -37,14 +38,10 @@ const navList: Route[] = [
 	}
 ];
 
-function addFailMessage(url: string, message: string) {
-	return encodeURI(url + "?failmessage=" + message)
-}
-
 export const load: LayoutServerLoad = async ({ locals, url }) => {
 	const user = locals.currentUser;
 
-	if (!user) throw redirect(303, addFailMessage('/login', 'Bạn chưa đăng nhập'));
+	if (!user) throw redirect(303, failMessageURL('/login', 'Bạn chưa đăng nhập'));
 
     const userInfo = {
         level: roleMap[user.roleId].level,
@@ -53,7 +50,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 
 	const currentRoute = navList.find((r) => r.route === url.pathname);
 	if (currentRoute?.permission && !currentRoute.permission(userInfo)) {
-		throw redirect(303,  addFailMessage('/app', 'Bạn không có quyền truy cập'));
+		throw redirect(303,  failMessageURL('/app', 'Bạn không có quyền truy cập'));
 	}
 
 	return {

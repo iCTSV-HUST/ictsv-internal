@@ -5,7 +5,7 @@ import { PermissionCheckMember } from '$lib/types';
 declare global {
 	namespace App {
 		interface Locals {
-			currentUser?: PermissionCheckMember;
+			currentUser?: PermissionCheckMember | null;
 		}
 
 		interface Platform {
