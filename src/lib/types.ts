@@ -1,4 +1,4 @@
-export type RoleId = "dev" | "president" | "topho" | "tt" | "ttmr" | "tv" | "ctv";
+export type RoleId = 'dev' | 'president' | 'topho' | 'tt' | 'ttmr' | 'tv' | 'ctv';
 
 export enum RoleLevel {
 	ToTruong = 1,
@@ -19,7 +19,6 @@ export const roleMap: Record<RoleId, { name: string; level: number }> = {
 	ctv: { name: 'Cộng tác viên', level: RoleLevel.CTV }
 };
 
-
 export type Member = {
 	id: number;
 	name: string;
@@ -31,23 +30,22 @@ export type Member = {
 	role: {
 		name: string;
 		level: number;
-	}
+	};
 	departments: string[];
-}
+};
 
-export const memberSort = (a: Member, b: Member) => (
+export const memberSort = (a: Member, b: Member) =>
 	// level 1 always at top
-	(Number(b.role.level === 1) - Number(a.role.level === 1)) ||
+	Number(b.role.level === 1) - Number(a.role.level === 1) ||
 	// sort by depts
 	(a.departments?.[0] ?? '').localeCompare(b.departments?.[0] ?? '') ||
 	// sort by level in each depts
 	a.role.level - b.role.level ||
 	// sort by generation
-	Number(a.generation) - Number(b.generation)
-);
+	Number(a.generation) - Number(b.generation);
 
 export type PermissionCheckMember = {
 	id: number;
 	roleId: RoleId;
 	departments: string[];
-}
+};

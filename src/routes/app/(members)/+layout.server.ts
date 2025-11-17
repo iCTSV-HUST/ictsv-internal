@@ -5,6 +5,6 @@ export const load: LayoutServerLoad = async () => {
 	const activeMembers = await getActiveMembers();
 
 	return {
-		activeMembers,
+		activeMembers
 	};
 };

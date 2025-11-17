@@ -70,7 +70,7 @@
 	function handleFileUpload(event: Event) {
 		const target = event.target as HTMLInputElement;
 		const file = target.files?.[0];
-		
+
 		if (!file) return;
 
 		Papa.parse(file, {
@@ -159,7 +159,7 @@
 				email: row.email,
 				departments: [row.mang] // Convert single department to array
 			}));
-			
+
 			onSave(members);
 			my_modal?.close();
 			resetForm();
@@ -194,11 +194,11 @@
 		</div>
 
 		<div class="form-control w-full mb-4">
-			<input 
+			<input
 				bind:this={fileInput}
-				type="file" 
-				accept=".csv" 
-				class="file-input file-input-bordered w-full" 
+				type="file"
+				accept=".csv"
+				class="file-input file-input-bordered w-full"
 				onchange={handleFileUpload}
 			/>
 		</div>

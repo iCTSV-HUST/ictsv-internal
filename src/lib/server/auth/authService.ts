@@ -1,6 +1,10 @@
 import type { Cookies } from '@sveltejs/kit';
 import { findMemberById, findMemberByUsercode, updateLastLogin } from '../db/queries/members';
-import { createRefreshToken, revokeRefreshToken, verifyRefreshToken } from '../db/queries/refreshTokens';
+import {
+	createRefreshToken,
+	revokeRefreshToken,
+	verifyRefreshToken
+} from '../db/queries/refreshTokens';
 import type { Member } from '../../types';
 import { createAccessToken } from './jwt';
 import { verifyPassword } from './password';
@@ -8,10 +12,10 @@ import { verifyPassword } from './password';
 // Cookies related stuffs
 export const AUTH_CONFIG = {
 	accessToken: {
-		maxAge: 60 * 60		// 1h
+		maxAge: 60 * 60 // 1h
 	},
 	refreshToken: {
-		maxAge: 7 * 24 * 60 * 60	// 7 days
+		maxAge: 7 * 24 * 60 * 60 // 7 days
 	}
 } as const;
 
@@ -27,7 +31,6 @@ export function clearAuthCookies(cookies: Cookies) {
 	cookies.delete('refresh_token', { path: '/' });
 }
 
-
 export async function login(
 	credentials: {
 		usercode: string;
@@ -36,7 +39,7 @@ export async function login(
 		userAgent?: string;
 	},
 	cookies: Cookies
-): Promise<{ member: Member; }> {
+): Promise<{ member: Member }> {
 	const fullMember = await findMemberByUsercode(credentials.usercode);
 
 	if (!fullMember) {
@@ -47,7 +50,7 @@ export async function login(
 		throw new Error('Account is deactivated');
 	}
 
-	const { passwordHash, ...member } = fullMember
+	const { passwordHash, ...member } = fullMember;
 
 	const isValidPassword = await verifyPassword(credentials.password, passwordHash);
 
@@ -73,7 +76,7 @@ export async function login(
 		...COOKIE_OPTIONS,
 		maxAge: AUTH_CONFIG.refreshToken.maxAge
 	});
-	console.log("Cookie set")
+	console.log('Cookie set');
 	// End of JWT related part
 
 	await updateLastLogin(member.id);
@@ -86,10 +89,10 @@ export async function refreshAccessToken(cookies: Cookies) {
 
 	if (refreshToken) {
 		const memberId = await verifyRefreshToken(refreshToken);
-		
+
 		if (memberId) {
 			const member = await findMemberById(memberId);
-			
+
 			if (member && (member.active || member.roleId === 'dev')) {
 				const accessToken = await createAccessToken(member);
 
@@ -110,7 +113,7 @@ export async function refreshAccessToken(cookies: Cookies) {
 
 export async function authLogout(cookies: Cookies) {
 	const refreshTokenId = cookies.get('refresh_token');
-	
+
 	if (refreshTokenId) {
 		await revokeRefreshToken(refreshTokenId);
 	}

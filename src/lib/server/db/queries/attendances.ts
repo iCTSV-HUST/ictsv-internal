@@ -2,15 +2,11 @@ import { db } from '../db';
 import { attendanceTable } from '../schema';
 import { eq, gte } from 'drizzle-orm';
 
-const mapAttendance = (r: {
-	date: string;
-	memberIds: any;
-	locked: boolean;
-}) => ({
+const mapAttendance = (r: { date: string; memberIds: any; locked: boolean }) => ({
 	date: r.date,
 	memberIds: (r.memberIds as number[]) || [],
 	locked: r.locked
-})
+});
 
 export async function getAttendancesSince(since: Date) {
 	const checkingDate = since.toISOString().split('T')[0];
@@ -24,11 +20,14 @@ export async function getAttendancesSince(since: Date) {
 	return records.map(mapAttendance);
 }
 
+export async function getAttendance(date: string) {
+	const [record] = await db.select().from(attendanceTable).where(eq(attendanceTable.date, date));
+
+	return mapAttendance(record);
+}
+
 export async function createAttendance(date: string) {
-	const [record] = await db
-		.insert(attendanceTable)
-		.values({ date, memberIds: [] })
-		.returning();
+	const [record] = await db.insert(attendanceTable).values({ date, memberIds: [] }).returning();
 
 	return mapAttendance(record);
 }

@@ -21,7 +21,7 @@ const navList: Route[] = [
 		permission: ({ level, departments }) =>
 			departments.includes('Tiểu ban') || level <= RoleLevel.ToPho
 	},
-    {
+	{
 		name: 'Quản lý thành viên',
 		route: '/app/tieu-ban',
 		permission: ({ level, departments }) =>
@@ -34,7 +34,7 @@ const navList: Route[] = [
 	},
 	{
 		name: 'Tài khoản',
-		route: '/app/profile',
+		route: '/app/profile'
 	}
 ];
 
@@ -43,23 +43,23 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 
 	if (!user) throw redirect(303, failMessageURL('/login', 'Người dùng chưa đăng nhập'));
 
-    const userInfo = {
-        level: roleMap[user.roleId].level,
-        departments: user.departments
-    }
+	const userInfo = {
+		level: roleMap[user.roleId].level,
+		departments: user.departments
+	};
 
 	const currentRoute = navList.find((r) => r.route === url.pathname);
 	if (currentRoute?.permission && !currentRoute.permission(userInfo)) {
-		throw redirect(303,  failMessageURL('/app', 'Bạn không có quyền truy cập'));
+		throw redirect(303, failMessageURL('/app', 'Bạn không có quyền truy cập'));
 	}
 
 	return {
 		user,
 		navList: navList
-            .filter(r => !r.permission || r.permission(userInfo))
-            .map(r => ({ 
-                name: r.name, 
-                route: r.route,
-            }))
+			.filter((r) => !r.permission || r.permission(userInfo))
+			.map((r) => ({
+				name: r.name,
+				route: r.route
+			}))
 	};
 };

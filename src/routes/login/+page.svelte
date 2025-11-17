@@ -20,9 +20,7 @@
 </script>
 
 <div class="mt-20 flex flex-col items-center h-full w-full">
-	<h2 class="mt-2 text-center text-3xl font-bold tracking-tight text-base-content">
-		Đăng nhập?
-	</h2>
+	<h2 class="mt-2 text-center text-3xl font-bold tracking-tight text-base-content">Đăng nhập?</h2>
 	<form class="flex flex-col items-center space-y-2 w-96 pt-4" method="POST">
 		<InputLabel>
 			<IDIcon width="1.5rem" />

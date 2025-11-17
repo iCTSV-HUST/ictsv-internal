@@ -13,9 +13,9 @@
 
 	// Initialize as empty
 	const myAttendances = new AttendanceManager();
-	
+
 	onMount(async () => {
-		await myAttendances.getRealData()
+		await myAttendances.getRealData();
 	});
 
 	let endTable = $state<HTMLDivElement>();
@@ -54,6 +54,9 @@
 
 	import DownloadIcon from 'lucide-svelte/icons/download';
 
+	const deleteButtonClass = (locked: boolean) => {
+		return locked ? 'bg-base-content/20 cursor-not-allowed' : 'hover:bg-error/50';
+	};
 </script>
 
 <div class="h-full flex flex-col">
@@ -65,18 +68,20 @@
 			</button>
 		</div>
 
-
 		<div class="flex gap-2 items-center font-semibold">
 			{#if !myAttendances.isSaved}
 				<span>Đang lưu</span>
 				<span class="loading loading-spinner loading-sm text-success"></span>
 			{:else}
 				<span>Đã lưu</span>
-				<input type="checkbox" checked disabled
-				 class="checkbox checkbox-sm checkbox-success rounded-full !opacity-100" />
+				<input
+					type="checkbox"
+					checked
+					disabled
+					class="checkbox checkbox-sm checkbox-success rounded-full !opacity-100"
+				/>
 			{/if}
 		</div>
-
 	</div>
 
 	<div class="border-2 border-neutral rounded-xl mx-4 overflow-scroll">
@@ -96,8 +101,10 @@
 							{#if usingMode === DELETE_MODE}
 								<!-- TODO: Make this a checkbox instead, so when clicking the Delete/Xoa button, we can select multiple days to delete at once (this also reduce chance of misclick) -->
 								<button
+									disabled={day.locked}
 									onclick={() => myAttendances.delete(index)}
-									class="absolute top-0 left-0 w-full h-full hover:bg-error/50"
+									class={'absolute top-0 left-0 w-full h-full ' +
+										deleteButtonClass(day.locked)}
 								>
 									{dayjs(day.date).format('DD/MM')}
 								</button>
@@ -175,7 +182,7 @@
 										value={member.id}
 										bind:group={myAttendances.records[index].memberIds}
 										class="checkbox checkbox-success rounded-full steps"
-										class:steps={myAttendances.hasStreak(index, member.id)}
+										class:show={myAttendances.hasStreak(index, member.id)}
 										class:checkbox-locked={day.locked}
 										disabled={day.locked}
 										onclick={() => {
@@ -237,16 +244,14 @@
 		opacity: 1;
 	}
 
-	@keyframes fadeIn {
-		0% {
-			opacity: 0;
-		}
-		100% {
-			opacity: 1;
-		}
-	}
 	.steps {
 		z-index: 1;
+	}
+	.steps.show::after {
+		pointer-events: none;
+		/* Fade in */
+		opacity: 1;
+		transition: opacity 0.4s ease;
 	}
 	.steps::after {
 		content: '';
@@ -258,6 +263,8 @@
 
 		background-color: oklch(var(--su));
 		z-index: 0;
-		animation: fadeIn 0.5s;
+		pointer-events: none;
+		/* Fade out 0 second */
+		opacity: 0;
 	}
 </style>

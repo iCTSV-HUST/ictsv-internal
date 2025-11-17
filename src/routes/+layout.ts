@@ -6,4 +6,3 @@ export const load: LayoutLoad = async ({ url }) => {
 		failMessage: url.searchParams.get('failmessage')
 	};
 };
-

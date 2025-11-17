@@ -7,7 +7,7 @@
 		short?: boolean;
 	} = $props();
 
-	type StringMap =  Record<string, { class: string; short: string }>;
+	type StringMap = Record<string, { class: string; short: string }>;
 
 	const deptMatcher: StringMap = {
 		'Mảng Kiểm duyệt': { class: 'badge-success', short: 'KD' },
@@ -18,7 +18,10 @@
 	};
 
 	function getClass(dept: string) {
-		return (deptMatcher[dept].class || '') + (short ? ' rounded-md px-2 py-0.5' : ' text-base rounded-md px-2 py-0.5');
+		return (
+			(deptMatcher[dept].class || '') +
+			(short ? ' rounded-md px-2 py-0.5' : ' text-base rounded-md px-2 py-0.5')
+		);
 	}
 
 	function getName(dept: string) {

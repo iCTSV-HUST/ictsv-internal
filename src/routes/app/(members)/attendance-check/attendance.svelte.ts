@@ -82,7 +82,7 @@ export class AttendanceManager {
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ memberIds })
 				});
-				
+
 				if (!res.ok) {
 					toast.error(`Lỗi: ${res.statusText}`);
 				}
@@ -97,8 +97,8 @@ export class AttendanceManager {
 
 		const exists = this.records.find((r) => r.date === date);
 		if (exists) {
-			toast.error("Đã điểm danh hôm nay")
-			return
+			toast.error('Đã điểm danh hôm nay');
+			return;
 		}
 
 		const newRecord = (await this.toastRequest('/api/attendance', 'POST', {
@@ -112,6 +112,7 @@ export class AttendanceManager {
 	async delete(dayIndex: number) {
 		const record = this.records[dayIndex];
 		if (!record) return;
+		if (record.locked) return;
 
 		await this.toastRequest(`/api/attendance/${record.date}`, 'DELETE');
 		this.records.splice(dayIndex, 1);

@@ -1,7 +1,6 @@
 export function failMessageURL(url: string, message: string) {
-	return `${url}?failMessage=${encodeURIComponent(message)}`
+	return `${url}?failMessage=${encodeURIComponent(message)}`;
 }
-
 
 export function download(filename: string, text: string | number | boolean) {
 	var element = document.createElement('a');

@@ -1,6 +1,6 @@
 import { type Handle } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
-import { verifyAccessToken } from "$lib/server/auth/jwt";
+import { verifyAccessToken } from '$lib/server/auth/jwt';
 import { refreshAccessToken } from '$lib/server/auth/authService';
 import { failMessageURL } from '$lib/utils';
 
@@ -17,21 +17,21 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	// Access token invalid, try refresh token
-    const refreshedMember = await refreshAccessToken(event.cookies);
-    if (refreshedMember) {
-        event.locals.currentUser = refreshedMember;
+	const refreshedMember = await refreshAccessToken(event.cookies);
+	if (refreshedMember) {
+		event.locals.currentUser = refreshedMember;
 		return await resolve(event);
-    }
+	}
 
 	// If not at public path and no user, block access
 	const { pathname } = event.url;
-	const publicPaths = ['/login', '/register', '/logout', '/']; 
+	const publicPaths = ['/login', '/register', '/logout', '/'];
 
 	if (!publicPaths.includes(pathname)) {
 		if (pathname.startsWith('/api/')) {
 			return new Response('Unauthorized', { status: 401 });
 		}
-		
+
 		return Response.redirect(
 			new URL(failMessageURL('/login', 'Bạn chưa đăng nhập'), event.url).href,
 			303
