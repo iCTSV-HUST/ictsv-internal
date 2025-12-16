@@ -56,7 +56,7 @@
 	</div>
 
 	<div class="flex-1 relative min-w-28">
-		<OpenLayersMap markerPoints={tableData.currentRow.coords} />
+		<OpenLayersMap markerPoints={tableData.currentRow.coords ?? []} />
 		<div
 			class="whitespace-pre-line absolute bottom-0 px-2 bg-accent/80 text-nowrap truncate w-full"
 		>

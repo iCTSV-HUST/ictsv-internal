@@ -1,14 +1,17 @@
 <script lang="ts">
+	// Svelte
+	import type { Action } from 'svelte/action';
+
 	// OpenLayers
 	import Map from 'ol/Map';
 	import TileLayer from 'ol/layer/Tile';
 	import Feature from 'ol/Feature';
-	// Svelte
+
 	import View from 'ol/View';
 	import OSM from 'ol/source/OSM';
 	import { useGeographic } from 'ol/proj';
 
-	import { Circle, Point } from 'ol/geom';
+	import { Circle, Geometry, Point } from 'ol/geom';
 	import { Modify, defaults as defaultInteractions } from 'ol/interaction';
 	import Collection from 'ol/Collection';
 
@@ -16,14 +19,13 @@
 	import { Vector as VectorLayer } from 'ol/layer';
 	import { Style, Stroke, Fill, Circle as StyleCircle } from 'ol/style';
 
+	import { asArray } from 'ol/color';
+
 	// Hard coding HUST location
 	let area_radius = 0.0035;
 	let area_coords = [105.8435, 21.0048];
 
 	useGeographic();
-
-	// Define custom color variable
-	import { asArray} from 'ol/color';
 
 	// Define circle color
 	const circleClr = 'blue';
@@ -54,9 +56,9 @@
 	// --------------------
 	// THIS PART IS DYNAMIC
 	const vectorSource = new VectorSource();
-	let paintfeatures = [];
+	let paintfeatures: Feature<Geometry>[] = [];
 
-	const addPoints = (list_points) => {
+	const addPoints = (list_points: number[][]) => {
 		// Remove previous points
 		paintfeatures.forEach((f) => vectorSource.removeFeature(f));
 		paintfeatures = [];
@@ -75,13 +77,13 @@
 
 	// Svelte 5: $props -- Replace export let
 	// Svelte 5: $effect -- Replace $:
-	let { markerPoints = [] } = $props();
+	let { markerPoints = [] }: { markerPoints: number[][] } = $props();
 	$effect(() => addPoints(markerPoints));
 	// END OF DYNAMIC
 	// --------------------
 
 	// Set up
-	const setupMap = (node) => {
+	const setupMap: Action = (node) => {
 		const osmLayer = new TileLayer({
 			source: new OSM({ url: 'https://tile-b.openstreetmap.fr/hot/{z}/{x}/{y}.png' })
 		});
@@ -123,6 +125,7 @@
 		const modify = new Modify({ features: new Collection([circleFeature]) });
 		map.addInteraction(modify);
 
+		// Define custom color circle background
 		const circleBg = asArray(circleClr);
 		circleBg[3] = 0.1;
 
