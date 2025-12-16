@@ -6,6 +6,8 @@
 	import MainTable from './MainTable.svelte';
 	import OpenLayersMap from './OpenLayersMap.svelte';
 
+	import BackIcon from 'lucide-svelte/icons/corner-up-left';
+
 	import { tableData, type GetAllResult } from './maintabledata.svelte';
 
 	let { data } = $props();
@@ -66,11 +68,12 @@
 <div class="mx-8 my-4 flex items-start gap-4">
 	<ImgCheckinDownloader />
 
-	<div>
-		<div class="flex gap-2 flex-col sm:gap-4 sm:flex-row items-start">
-			<label class="flex items-center">
-				<span class="min-w-12">From: </span>
+	<div class="flex gap-3 items-start">
+		<div class="grid grid-cols-[auto_auto] gap-x-3 gap-y-2">
+			<label for="from" class="contents cursor-pointer">
+				<span class="self-center">From:</span>
 				<input
+					id="from"
 					type="number"
 					class="input input-sm input-bordered w-24 text-base"
 					value={tableData.filter.min + 1}
@@ -79,10 +82,11 @@
 					}}
 				/>
 			</label>
-
-			<label class="flex items-center">
-				<span class="min-w-12 sm:min-w-8">To:</span>
+	
+			<label for="to" class="contents cursor-pointer">
+				<span class="self-center">To:</span>
 				<input
+					id="to"
 					type="number"
 					class="input input-sm input-bordered w-24 text-base"
 					value={tableData.filter.max}
@@ -93,8 +97,8 @@
 			</label>
 		</div>
 
-		<label class="form-control max-w-min">
-			<span class="label">Filter: </span>
+		<label class="form-control">
+			<span class="label pt-0 pb-2">Lọc MSSV:</span>
 			<textarea
 				class="textarea textarea-sm textarea-bordered leading-tight text-base"
 				rows="5"
@@ -106,13 +110,21 @@
 		</label>
 	</div>
 
-	<!-- Toggle flag for KD editing -->
-	<label class="form-control flex flex-row gap-2 items-center">
-		<span class="label">Danger: </span>
-		<input type="checkbox" class="toggle toggle-info border-2" bind:checked={KDEditMode} />
-	</label>
-
 	{#if KDEditMode}
 		<ExportCSV />
 	{/if}
 </div>
+
+<!-- Toggle flag for KD editing -->
+<div class="flex justify-between absolute bottom-0 left-0 right-0 mx-4 mb-2">
+	<a href="/app/kd/checker" class="btn btn-ghost btn-sm pl-2 text-base-content/50 hover:text-base-content">
+		<BackIcon size="1.25em"/>
+		Quay lại
+	</a>
+
+	<label class="form-control flex flex-row gap-2 items-center">
+		<span class="label">Danger: </span>
+		<input type="checkbox" class="toggle toggle-error border-2" bind:checked={KDEditMode} />
+	</label>
+</div>
+

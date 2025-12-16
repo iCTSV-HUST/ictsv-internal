@@ -94,6 +94,7 @@ type Row = {
 	assignedStatus?: string;
 };
 
+import toast from 'svelte-french-toast';
 import type { KDCTSVResponseType } from '../kddata.svelte';
 
 export type GetAllResult = KDCTSVResponseType & {
@@ -105,7 +106,7 @@ class MainTable {
 	rows = $state<Row[]>(testRows.map((r, index) => ({ ...r, index })));
 	rowfocus = $state(0);
 	filter = $state({
-		max: 0,
+		max: 1,
 		min: 0,
 		list: new Array<string>()
 	});
@@ -152,6 +153,9 @@ class MainTable {
 				.map((id) => allRowsMap.get(id))
 				.filter(Boolean) as Row[];
 		}
+
+		toast.success('Đã lọc');
+
 		return filteredList;
 	});
 }

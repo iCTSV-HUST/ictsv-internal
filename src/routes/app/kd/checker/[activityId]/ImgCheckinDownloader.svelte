@@ -12,7 +12,7 @@
 	onclick={() => myDownloader.downloadAllImgsAndCheckins()}
 	{disabled}
 >
-	Tải tất cả ảnh
+	Tải ảnh & checkin
 </button>
 
 <ProgressBar progressCurrent={myDownloader.progress} progressTotal={myDownloader.total} />

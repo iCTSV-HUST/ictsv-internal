@@ -3,4 +3,4 @@
 	console.log(data.user);
 </script>
 
-<div>Trang chủ chưa có gì cả</div>
+<div>Trang chủ chưa có gì cả :&lt;</div>

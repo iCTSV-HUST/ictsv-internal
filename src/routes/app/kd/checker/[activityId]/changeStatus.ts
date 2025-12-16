@@ -18,7 +18,7 @@ export async function setStatus(mssv: string, userStatus: Status) {
 		UserRole: 2
 	});
 
-	console.log(JSON.parse(jsonStr));
+	// console.log(JSON.parse(jsonStr));
 
 	try {
 		const response = await fetch(
@@ -46,7 +46,7 @@ export async function setStatus(mssv: string, userStatus: Status) {
 		}
 	} catch (err) {
 		const e = err as Error;
-		console.log(e);
+		console.error(e);
 		toast.error(e.message);
 	}
 }

@@ -23,10 +23,10 @@
 	useGeographic();
 
 	// Define custom color variable
-	import { asArray } from 'ol/color';
+	import { asArray} from 'ol/color';
+
+	// Define circle color
 	const circleClr = 'blue';
-	let circleBg = asArray(circleClr);
-	circleBg[3] = 0.1;
 
 	// Default circle range
 	const circle = new Circle(area_coords, area_radius);
@@ -43,7 +43,7 @@
 	// Exports
 	// Local state
 	let mapId = 20;
-	let map = null;
+	let map: Map | null = null;
 
 	// Marker initialziation
 	// export let marker = [0, 0];
@@ -116,11 +116,15 @@
 		// const checkinPoints = getCheckinPointsFeatures();
 		// Marker initialziation
 		// const markerFeature = new Feature(marker_point);
+
 		vectorSource.addFeatures([circleFeature, centerFeature]);
 
 		// Modify circle
 		const modify = new Modify({ features: new Collection([circleFeature]) });
 		map.addInteraction(modify);
+
+		const circleBg = asArray(circleClr);
+		circleBg[3] = 0.1;
 
 		// Create a new vector layer to hold the circle geometry
 		const vectorLayer = new VectorLayer({

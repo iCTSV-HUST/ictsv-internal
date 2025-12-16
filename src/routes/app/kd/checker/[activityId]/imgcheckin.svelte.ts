@@ -15,7 +15,6 @@ function setupInfo() {
 	unchangedData.AId = kdData.AId;
 	unchangedData.TokenCode = kdData.TokenCode;
 	unchangedData.UserName = kdData.UserName;
-	console.log(unchangedData);
 
 	return unchangedData.AId != '' && unchangedData.TokenCode != '' && unchangedData.UserName != '';
 }
@@ -34,7 +33,7 @@ async function getImage(mssv: string) {
 		return await response.blob();
 	} catch (err) {
 		const e = err as Error;
-		console.log(e);
+		console.error(e);
 		toast.error(e.message);
 		return null;
 	}
@@ -110,7 +109,7 @@ async function getCheckin(mssv: string) {
 		};
 	} catch (err) {
 		const e = err as Error;
-		console.log(e);
+		console.error(e);
 		toast.error(e.message);
 
 		return {
