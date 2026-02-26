@@ -82,7 +82,7 @@
 					}}
 				/>
 			</label>
-	
+
 			<label for="to" class="contents cursor-pointer">
 				<span class="self-center">To:</span>
 				<input
@@ -117,8 +117,11 @@
 
 <!-- Toggle flag for KD editing -->
 <div class="flex justify-between absolute bottom-0 left-0 right-0 mx-4 mb-2">
-	<a href="/app/kd/checker" class="btn btn-ghost btn-sm pl-2 text-base-content/50 hover:text-base-content">
-		<BackIcon size="1.25em"/>
+	<a
+		href="/app/kd/checker"
+		class="btn btn-ghost btn-sm pl-2 text-base-content/50 hover:text-base-content"
+	>
+		<BackIcon size="1.25em" />
 		Quay lại
 	</a>
 
@@ -127,4 +130,3 @@
 		<input type="checkbox" class="toggle toggle-error border-2" bind:checked={KDEditMode} />
 	</label>
 </div>
-

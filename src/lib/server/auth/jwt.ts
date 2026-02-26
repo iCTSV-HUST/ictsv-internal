@@ -9,7 +9,8 @@ export async function createAccessToken(member: PermissionCheckMember) {
 	return await new SignJWT({
 		id: member.id,
 		roleId: member.roleId,
-		departments: member.departments
+		departments: member.departments,
+		active: member.active
 	})
 		.setProtectedHeader({ alg: 'HS256' })
 		.setExpirationTime('1h') // short-lived so refresh token can be used

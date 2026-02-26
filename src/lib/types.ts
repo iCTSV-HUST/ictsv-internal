@@ -1,16 +1,17 @@
 export type RoleId = 'dev' | 'president' | 'topho' | 'tt' | 'ttmr' | 'tv' | 'ctv';
 
 export enum RoleLevel {
-	ToTruong = 1,
-	ToPho = 2,
-	TT = 3,
-	TTMR = 4,
-	TV = 5,
-	CTV = 6
+	DEV = 2020,
+	ToTruong = 6,
+	ToPho = 5,
+	TT = 4,
+	TTMR = 3,
+	TV = 2,
+	CTV = 1
 }
 
-export const roleMap: Record<RoleId, { name: string; level: number }> = {
-	dev: { name: 'Developer', level: -1 },
+export const roleMap: Record<RoleId, { name: string; level: RoleLevel }> = {
+	dev: { name: 'Developer', level: RoleLevel.DEV },
 	president: { name: 'Tổ trưởng', level: RoleLevel.ToTruong },
 	topho: { name: 'Tổ phó', level: RoleLevel.ToPho },
 	tt: { name: 'Tổ viên Thường trực', level: RoleLevel.TT },
@@ -38,7 +39,7 @@ export const memberSort = (a: Member, b: Member) =>
 	// active first then inactive
 	Number(b.active) - Number(a.active) ||
 	// level 1 always at top
-	Number(b.role.level === 1) - Number(a.role.level === 1) ||
+	Number(b.role.level === RoleLevel.ToTruong) - Number(a.role.level === RoleLevel.ToTruong) ||
 	// sort by depts
 	(a.departments?.[0] ?? '').localeCompare(b.departments?.[0] ?? '') ||
 	// sort by level in each depts
@@ -50,4 +51,5 @@ export type PermissionCheckMember = {
 	id: number;
 	roleId: RoleId;
 	departments: string[];
+	active: boolean;
 };

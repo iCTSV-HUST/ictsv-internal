@@ -1,63 +1,63 @@
 {
-  "name": "ictsv-internal",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "dev": "vite dev",
-    "build": "vite build",
-    "preview": "pnpm run build && wrangler pages dev",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "deploy": "pnpm run build && wrangler pages deploy",
-    "cf-typegen": "wrangler types && move worker-configuration.d.ts src/",
-    "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
-    "db:migrate": "tsx ./src/lib/server/db/migrate.ts"
-  },
-  "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250910.0",
-    "@sveltejs/adapter-auto": "^6.1.0",
-    "@sveltejs/adapter-cloudflare": "^7.2.3",
-    "@sveltejs/kit": "^2.37.1",
-    "@sveltejs/vite-plugin-svelte": "^4.0.4",
-    "@types/bcrypt": "^6.0.0",
-    "@types/papaparse": "^5.3.16",
-    "autoprefixer": "^10.4.21",
-    "daisyui": "^4.12.24",
-    "drizzle-kit": "^0.31.4",
-    "postcss": "^8.5.6",
-    "prettier": "3.6.2",
-    "prettier-plugin-svelte": "^3.4.0",
-    "svelte": "^5.38.8",
-    "svelte-check": "^4.3.1",
-    "svelte-confetti": "^2.3.2",
-    "svelte-multiselect": "^11.2.4",
-    "tailwindcss": "^3.4.17",
-    "tsx": "^4.20.6",
-    "typescript": "^5.9.2",
-    "vite": "^5.4.20",
-    "wrangler": "^4.35.0"
-  },
-  "type": "module",
-  "dependencies": {
-    "@neondatabase/serverless": "^1.0.1",
-    "bcryptjs": "^3.0.2",
-    "dayjs": "^1.11.18",
-    "dotenv": "^17.2.2",
-    "drizzle-orm": "^0.44.5",
-    "jose": "^6.1.0",
-    "js-confetti": "^0.12.0",
-    "lucide-svelte": "^0.543.0",
-    "ol": "^10.6.1",
-    "p-all": "^5.0.0",
-    "papaparse": "^5.5.3",
-    "svelte-french-toast": "2.0.0-alpha.0",
-    "svelte-virtuallists": "^1.4.2",
-    "zod": "^3.25.76"
-  },
-  "pnpm": {
-    "overrides": {
-      "cookie": ">=0.7.0"
-    }
-  }
+	"name": "ictsv-internal",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"preinstall": "npx only-allow pnpm",
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "pnpm run build && wrangler pages dev",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"deploy": "pnpm run build && wrangler pages deploy",
+		"cf-typegen": "wrangler types && move worker-configuration.d.ts src/",
+		"db:generate": "drizzle-kit generate --config=drizzle.config.ts",
+		"db:migrate": "tsx ./src/lib/server/db/migrate.ts"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20250910.0",
+		"@sveltejs/adapter-auto": "^6.1.0",
+		"@sveltejs/adapter-cloudflare": "^7.2.3",
+		"@sveltejs/kit": "^2.37.1",
+		"@sveltejs/vite-plugin-svelte": "^4.0.4",
+		"@types/bcrypt": "^6.0.0",
+		"@types/papaparse": "^5.3.16",
+		"autoprefixer": "^10.4.21",
+		"daisyui": "^4.12.24",
+		"drizzle-kit": "^0.31.4",
+		"postcss": "^8.5.6",
+		"prettier": "3.6.2",
+		"prettier-plugin-svelte": "^3.4.0",
+		"svelte": "^5.38.8",
+		"svelte-check": "^4.3.1",
+		"svelte-confetti": "^2.3.2",
+		"svelte-multiselect": "^11.2.4",
+		"tailwindcss": "^3.4.17",
+		"tsx": "^4.20.6",
+		"typescript": "^5.9.2",
+		"vite": "^5.4.20",
+		"wrangler": "^4.35.0"
+	},
+	"type": "module",
+	"dependencies": {
+		"@neondatabase/serverless": "^1.0.1",
+		"bcryptjs": "^3.0.2",
+		"dayjs": "^1.11.18",
+		"dotenv": "^17.2.2",
+		"drizzle-orm": "^0.44.5",
+		"jose": "^6.1.0",
+		"js-confetti": "^0.12.0",
+		"lucide-svelte": "^0.543.0",
+		"ol": "^10.6.1",
+		"p-all": "^5.0.0",
+		"papaparse": "^5.5.3",
+		"svelte-french-toast": "2.0.0-alpha.0",
+		"svelte-virtuallists": "^1.4.2",
+		"zod": "^3.25.76"
+	},
+	"pnpm": {
+		"overrides": {
+			"cookie": ">=0.7.0"
+		}
+	}
 }
