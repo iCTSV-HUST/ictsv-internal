@@ -38,9 +38,8 @@
 		if (!res.ok) {
 			toast.error('Cập nhật thành viên thất bại');
 			console.error('Failed to update member');
-		}
-		else {
-			toast.success('Cập nhật thành viên thành công')
+		} else {
+			toast.success('Cập nhật thành viên thành công');
 		}
 	}
 
@@ -79,7 +78,8 @@
 								<MultiSelect
 									bind:selected={member.departments}
 									options={departmentOptions}
-									onchange={() => saveMember(member.id, member.roleId, member.active)}
+									onchange={() =>
+										saveMember(member.id, member.roleId, member.active)}
 									minSelect={1}
 									outerDivClass="!py-1 !px-0 flex-1"
 									liSelectedClass="!rounded-md !py-1"
@@ -93,7 +93,8 @@
 								<select
 									class="w-full px-2 py-2.5 bg-base-100 border border-base-content/30 rounded-md focus:outline-none focus:ring-1 focus:ring-neutral focus:border-transparent"
 									bind:value={member.roleId}
-									onchange={() => saveMember(member.id, member.roleId, member.active)}
+									onchange={() =>
+										saveMember(member.id, member.roleId, member.active)}
 								>
 									{#each roleOptions as role}
 										<option value={role.value} class="border-0">
@@ -114,9 +115,7 @@
 								type="checkbox"
 								class="checkbox checkbox-sm checkbox-primary px-4"
 								bind:checked={member.active}
-								onchange={() => 
-									saveMember(member.id, member.roleId, member.active)
-								}	
+								onchange={() => saveMember(member.id, member.roleId, member.active)}
 							/>
 						</td>
 					</tr>

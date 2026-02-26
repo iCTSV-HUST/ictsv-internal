@@ -98,7 +98,7 @@
 			<td>{item.UserCode}</td>
 
 			{#if item.Faculty !== undefined && !compactTable}
-				<td class="long-ass-col"><div>{item.Faculty}</div></td>
+				<td class="long-ass-col" title={item.Faculty}><div>{item.Faculty}</div></td>
 			{/if}
 
 			<td class="min-w-32">

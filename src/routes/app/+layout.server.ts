@@ -1,13 +1,17 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
-import { RoleLevel, roleMap, type RoleId } from '$lib/types';
+import { RoleLevel, roleMap } from '$lib/types';
 import { failMessageURL } from '$lib/utils';
 
 type Route = {
 	name: string;
 	route: string;
 
-	permission?: (member: { level: number; departments: string[] }) => boolean;
+	permission?: (member: {
+		level: RoleLevel;
+		departments: string[];
+		isActive: boolean;
+	}) => boolean;
 };
 
 const navList: Route[] = [
@@ -18,19 +22,20 @@ const navList: Route[] = [
 	{
 		name: 'Điểm danh',
 		route: '/app/attendance-check',
-		permission: ({ level, departments }) =>
-			departments.includes('Tiểu ban') || level <= RoleLevel.ToPho
+		permission: ({ level, departments, isActive }) =>
+			isActive && (departments.includes('Tiểu ban') || level >= RoleLevel.ToPho)
 	},
 	{
 		name: 'Quản lý thành viên',
 		route: '/app/tieu-ban',
-		permission: ({ level, departments }) =>
-			departments.includes('Tiểu ban') || level <= RoleLevel.ToPho
+		permission: ({ level, departments, isActive }) =>
+			isActive && (departments.includes('Tiểu ban') || level >= RoleLevel.ToPho)
 	},
 	{
 		name: 'Kiểm duyệt - Duyệt MC',
 		route: '/app/kd/checker',
-		permission: ({ departments }) => departments.includes('Mảng Kiểm duyệt')
+		permission: ({ departments, isActive }) =>
+			isActive && departments.includes('Mảng Kiểm duyệt')
 	},
 	{
 		name: 'Tài khoản',
@@ -45,7 +50,8 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 
 	const userInfo = {
 		level: roleMap[user.roleId].level,
-		departments: user.departments
+		departments: user.departments,
+		isActive: true 		// TODO: use user.active here
 	};
 
 	const currentRoute = navList.find((r) => r.route === url.pathname);
