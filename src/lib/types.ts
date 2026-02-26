@@ -35,6 +35,8 @@ export type Member = {
 };
 
 export const memberSort = (a: Member, b: Member) =>
+	// active first then inactive
+	Number(b.active) - Number(a.active) ||
 	// level 1 always at top
 	Number(b.role.level === 1) - Number(a.role.level === 1) ||
 	// sort by depts
