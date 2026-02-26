@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { memberSort, roleMap } from '$lib/types';
+	import toast from 'svelte-french-toast';
 	import DepartmentDisplay from '../../DepartmentDisplay.svelte';
 
 	const { data } = $props();
 
-	let memberList = $state(data.activeMembers.sort(memberSort));
+	let memberList = $state(data.allMembers.sort(memberSort));
 
 	import MultiSelect from 'svelte-multiselect';
 
@@ -27,6 +28,22 @@
 		{ value: 'ctv', label: 'Cộng tác viên' }
 	];
 
+	async function saveMember(memberId: number, roleId: string, active: boolean) {
+		const res = await fetch('/api/member', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ memberId, roleId, active })
+		});
+
+		if (!res.ok) {
+			toast.error('Cập nhật thành viên thất bại');
+			console.error('Failed to update member');
+		}
+		else {
+			toast.success('Cập nhật thành viên thành công')
+		}
+	}
+
 	// import UploadCSV from './UploadCSV.svelte';
 </script>
 
@@ -45,6 +62,7 @@
 					<th>Mảng</th>
 					<th>Chức vụ</th>
 					<th>Gen</th>
+					<th>Trạng thái hoạt động</th>
 				</tr>
 			</thead>
 			<tbody class="overflow-y-scroll">
@@ -61,6 +79,7 @@
 								<MultiSelect
 									bind:selected={member.departments}
 									options={departmentOptions}
+									onchange={() => saveMember(member.id, member.roleId, member.active)}
 									minSelect={1}
 									outerDivClass="!py-1 !px-0 flex-1"
 									liSelectedClass="!rounded-md !py-1"
@@ -74,6 +93,7 @@
 								<select
 									class="w-full px-2 py-2.5 bg-base-100 border border-base-content/30 rounded-md focus:outline-none focus:ring-1 focus:ring-neutral focus:border-transparent"
 									bind:value={member.roleId}
+									onchange={() => saveMember(member.id, member.roleId, member.active)}
 								>
 									{#each roleOptions as role}
 										<option value={role.value} class="border-0">
@@ -88,6 +108,16 @@
 
 						<td class="relative">
 							{member.generation}
+						</td>
+						<td>
+							<input
+								type="checkbox"
+								class="checkbox checkbox-sm checkbox-primary px-4"
+								bind:checked={member.active}
+								onchange={() => 
+									saveMember(member.id, member.roleId, member.active)
+								}	
+							/>
 						</td>
 					</tr>
 				{/each}

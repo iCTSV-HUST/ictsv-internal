@@ -112,3 +112,29 @@ export async function getActiveMembers(): Promise<Member[]> {
 
 	return members.map(mapMemberRoleDepartments);
 }
+
+
+export async function getAllMembers(): Promise<Member[]> {
+	const members = await db.query.membersTable.findMany({
+		columns: {
+			createdAt: false,
+			updatedAt: false,
+			lastLoginAt: false,
+			passwordHash: false
+		},
+		with: {
+			departments: {
+				columns: {}, // Exclude junction table columns
+				with: {
+					department: true // Get actual department data
+				}
+			}
+		}
+	});
+
+	return members.map(mapMemberRoleDepartments);
+}
+
+export async function updateMember(memberId: number, roleid: RoleId, active: boolean) {
+	await db.update(membersTable).set({ roleId: roleid, active }).where(eq(membersTable.id, memberId));
+}
