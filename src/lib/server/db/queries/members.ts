@@ -1,6 +1,6 @@
 import { roleMap, type Member, type RoleId } from '$lib/types';
 import { db } from '../db';
-import { membersTable } from '../schema';
+import { departmentsTable, membersTable, memberDepartmentsTable } from '../schema';
 import { eq } from 'drizzle-orm';
 
 function mapMemberRole<T extends { roleId: string }>(member: T) {
@@ -135,6 +135,17 @@ export async function getAllMembers(): Promise<Member[]> {
 	return members.map(mapMemberRoleDepartments);
 }
 
-export async function updateMember(memberId: number, roleid: RoleId, active: boolean) {
-	await db.update(membersTable).set({ roleId: roleid, active }).where(eq(membersTable.id, memberId));
+export async function updateMember(memberId: number, departments: string[], roleId: RoleId, active: boolean) {
+	await db.update(membersTable).set({ roleId: roleId, active }).where(eq(membersTable.id, memberId));
+	var deptIds = [];
+	for (const deptName of departments) {
+		const dept = await db.query.departmentsTable.findFirst({ where: eq(departmentsTable.name, deptName) });
+		if (dept) {
+			deptIds.push(dept.id);
+		}
+	}
+	await db.delete(memberDepartmentsTable).where(eq(memberDepartmentsTable.memberId, memberId));
+	for (const deptId of deptIds) {
+		await db.insert(memberDepartmentsTable).values({ memberId, departmentId: deptId });
+	}
 }
