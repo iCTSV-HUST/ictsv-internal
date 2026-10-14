@@ -1,4 +1,4 @@
-import { roleMap, type Member, type RoleId } from '$lib/types';
+import { roleMap, type Member, type RoleId } from '#lib/types';
 import { db } from '../db';
 import { membersTable } from '../schema';
 import { eq } from 'drizzle-orm';

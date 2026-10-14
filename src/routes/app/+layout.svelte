@@ -3,10 +3,10 @@
 
 	const { data, children } = $props();
 
-	import CheckIcon from 'lucide-svelte/icons/circle-check-big';
-	import BookUserIcon from 'lucide-svelte/icons/book-user';
-	import ListCheckIcon from 'lucide-svelte/icons/list-checks';
-	import UserIcon from 'lucide-svelte/icons/user';
+	import CheckIcon from '@lucide/svelte/icons/circle-check-big';
+	import BookUserIcon from '@lucide/svelte/icons/book-user';
+	import ListCheckIcon from '@lucide/svelte/icons/list-checks';
+	import UserIcon from '@lucide/svelte/icons/user';
 
 	const navIcons: {
 		[key: string]: any;
@@ -47,7 +47,7 @@
 
 		<a
 			href="/logout"
-			class="logout-btn text-center border-error border-2 border-opacity-50 hover:bg-error w-full"
+			class="logout-btn text-center border-error/50 border-2 hover:bg-error w-full"
 		>
 			Đăng xuất
 		</a>
@@ -71,6 +71,6 @@
 	}
 
 	.navigation-sidebar li a:hover {
-		background-color: oklch(var(--p));
+		background-color: var(--color-primary);
 	}
 </style>

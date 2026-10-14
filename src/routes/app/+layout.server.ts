@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
-import { RoleLevel, roleMap } from '$lib/types';
-import { failMessageURL } from '$lib/utils';
+import { RoleLevel, roleMap } from '#lib/types';
+import { failMessageURL } from '#lib/utils';
 
 type Route = {
 	name: string;

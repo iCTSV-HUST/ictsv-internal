@@ -1,4 +1,4 @@
-import { hashPassword } from '$lib/server/auth/password';
+import { hashPassword } from '#lib/server/auth/password';
 import Papa from 'papaparse';
 import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';

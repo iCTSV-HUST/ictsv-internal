@@ -1,6 +1,6 @@
 <script lang="ts">
-	import UploadIcon from 'lucide-svelte/icons/upload';
-	import DownloadIcon from 'lucide-svelte/icons/download';
+	import UploadIcon from '@lucide/svelte/icons/upload';
+	import DownloadIcon from '@lucide/svelte/icons/download';
 	import Papa from 'papaparse';
 
 	interface Props {
@@ -193,12 +193,12 @@
 			</button>
 		</div>
 
-		<div class="form-control w-full mb-4">
+		<div class="flex flex-col w-full mb-4">
 			<input
 				bind:this={fileInput}
 				type="file"
 				accept=".csv"
-				class="file-input file-input-bordered w-full"
+				class="file-input w-full"
 				onchange={handleFileUpload}
 			/>
 		</div>

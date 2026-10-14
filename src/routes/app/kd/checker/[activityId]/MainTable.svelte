@@ -143,7 +143,7 @@
 				<td class="text-center">
 					<!-- Select status -->
 					<select
-						class="select select-bordered select-xs min-w-24 select-arrow"
+						class="select select-xs min-w-24 select-arrow"
 						onchange={(e) =>
 							(tableData.rows[item.index].assignedStatus = e.currentTarget.value)}
 						value={item.assignedStatus ?? ''}
@@ -160,6 +160,8 @@
 </VirtualList>
 
 <style>
+	@reference '../../../../../app.css';
+
 	:global(table) {
 		@apply w-full table table-xs;
 	}

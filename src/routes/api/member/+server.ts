@@ -1,5 +1,5 @@
-import { updateMember } from '$lib/server/db/queries/members';
-import type { RoleId } from '$lib/types';
+import { updateMember } from '#lib/server/db/queries/members';
+import type { RoleId } from '#lib/types';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {

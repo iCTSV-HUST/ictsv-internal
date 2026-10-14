@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { memberSort, roleMap } from '$lib/types';
+	import { memberSort, roleMap } from '#lib/types';
 	import toast from 'svelte-french-toast';
 	import DepartmentDisplay from '../../DepartmentDisplay.svelte';
 
@@ -91,7 +91,7 @@
 						<td onclick={() => (editingMemberIndex = index)} class="py-1">
 							{#if editingMemberIndex === index}
 								<select
-									class="w-full px-2 py-2.5 bg-base-100 border border-base-content/30 rounded-md focus:outline-none focus:ring-1 focus:ring-neutral focus:border-transparent"
+									class="w-full px-2 py-2.5 bg-base-100 border border-base-content/30 rounded-md focus:outline-hidden focus:ring-1 focus:ring-neutral focus:border-transparent"
 									bind:value={member.roleId}
 									onchange={() =>
 										saveMember(member.id, member.roleId, member.active)}

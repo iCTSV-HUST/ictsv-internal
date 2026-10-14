@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { login } from '$lib/server/auth/authService';
+import { login } from '#lib/server/auth/authService';
 
 export const actions = {
 	default: async ({ request, cookies, getClientAddress }) => {
