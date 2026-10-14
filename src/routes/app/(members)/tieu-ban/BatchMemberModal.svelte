@@ -360,7 +360,7 @@
 							<td class="p-1 border-b border-base-300">
 								<input
 									type="text"
-									placeholder="email@gmail.com / hust.edu.vn"
+									placeholder="@sis.hust.edu.vn"
 									class="input input-xs input-ghost w-full focus:input-bordered focus:bg-base-100"
 									bind:value={row.email}
 									onpaste={(e) => handlePaste(e, idx)}

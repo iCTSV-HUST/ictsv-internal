@@ -9,7 +9,7 @@
 	import { memberSort } from '$lib/types';
 
 	const { data } = $props();
-	const activeMembers = data.activeMembers.sort(memberSort);
+	let activeMembers = $derived((data.activeMembers ?? []).slice().sort(memberSort));
 
 	// Initialize as empty
 	const myAttendances = new AttendanceManager();
