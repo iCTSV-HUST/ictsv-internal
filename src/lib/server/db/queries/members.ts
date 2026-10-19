@@ -123,7 +123,7 @@ export async function createMembersBatch(membersInput: NewMemberInput[]): Promis
 	const createdMembers: Member[] = [];
 
 	for (const input of membersInput) {
-		const passwordHash = await hashPassword(input.usercode);
+		const passwordHash = await hashPassword(input.email);
 
 		const [insertedMember] = await db
 			.insert(membersTable)
