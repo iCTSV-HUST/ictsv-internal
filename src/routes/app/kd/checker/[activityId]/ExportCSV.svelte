@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { download } from '$lib/utils';
+	import { download } from '#lib/utils';
 
 	const StatusMap = ['Bị từ chối', 'Chờ phê duyệt', 'Được xác nhận'];
 
@@ -14,7 +14,7 @@
 		download('exportedData.csv', buffer);
 	}
 
-	import DownloadIcon from 'lucide-svelte/icons/download';
+	import DownloadIcon from '@lucide/svelte/icons/download';
 	import { tableData } from './maintabledata.svelte';
 </script>
 

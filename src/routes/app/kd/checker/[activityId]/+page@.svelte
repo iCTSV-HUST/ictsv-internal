@@ -6,7 +6,7 @@
 	import MainTable from './MainTable.svelte';
 	import OpenLayersMap from './OpenLayersMap.svelte';
 
-	import BackIcon from 'lucide-svelte/icons/corner-up-left';
+	import BackIcon from '@lucide/svelte/icons/corner-up-left';
 
 	import { tableData, type GetAllResult } from './maintabledata.svelte';
 
@@ -75,20 +75,20 @@
 				<input
 					id="from"
 					type="number"
-					class="input input-sm input-bordered w-24 text-base"
+					class="input input-sm w-24 text-base"
 					value={tableData.filter.min + 1}
 					onchange={(e) => {
 						tableData.filter.min = Math.max(parseInt(e.currentTarget.value) - 1, 0);
 					}}
 				/>
 			</label>
-	
+
 			<label for="to" class="contents cursor-pointer">
 				<span class="self-center">To:</span>
 				<input
 					id="to"
 					type="number"
-					class="input input-sm input-bordered w-24 text-base"
+					class="input input-sm w-24 text-base"
 					value={tableData.filter.max}
 					onchange={(e) => {
 						tableData.filter.max = parseInt(e.currentTarget.value);
@@ -97,10 +97,10 @@
 			</label>
 		</div>
 
-		<label class="form-control">
+		<label class="flex flex-col">
 			<span class="label pt-0 pb-2">Lọc MSSV:</span>
 			<textarea
-				class="textarea textarea-sm textarea-bordered leading-tight text-base"
+				class="textarea textarea-sm leading-tight text-base"
 				rows="5"
 				onchange={(e) => {
 					tableData.filter.list = parseLines(e.currentTarget.value);
@@ -117,14 +117,16 @@
 
 <!-- Toggle flag for KD editing -->
 <div class="flex justify-between absolute bottom-0 left-0 right-0 mx-4 mb-2">
-	<a href="/app/kd/checker" class="btn btn-ghost btn-sm pl-2 text-base-content/50 hover:text-base-content">
-		<BackIcon size="1.25em"/>
+	<a
+		href="/app/kd/checker"
+		class="btn btn-ghost btn-sm pl-2 text-base-content/50 hover:text-base-content"
+	>
+		<BackIcon size="1.25em" />
 		Quay lại
 	</a>
 
-	<label class="form-control flex flex-row gap-2 items-center">
+	<label class="flex flex-row gap-2 items-center">
 		<span class="label">Danger: </span>
 		<input type="checkbox" class="toggle toggle-error border-2" bind:checked={KDEditMode} />
 	</label>
 </div>
-

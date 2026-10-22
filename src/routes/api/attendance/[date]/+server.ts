@@ -4,7 +4,7 @@ import {
 	getAttendance,
 	deleteAttendance,
 	updateAttendance
-} from '$lib/server/db/queries/attendances';
+} from '#lib/server/db/queries/attendances';
 
 export const PATCH: RequestHandler = async ({ params, request }) => {
 	const { memberIds } = await request.json<{ memberIds: number[] }>();

@@ -1,8 +1,7 @@
-import { type Handle } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
-import { verifyAccessToken } from '$lib/server/auth/jwt';
-import { refreshAccessToken } from '$lib/server/auth/authService';
-import { failMessageURL } from '$lib/utils';
+import type { Handle } from '@sveltejs/kit/hooks';
+import { verifyAccessToken } from '#lib/server/auth/jwt';
+import { refreshAccessToken } from '#lib/server/auth/authService';
+import { failMessageURL } from '#lib/utils';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	// Try access token first

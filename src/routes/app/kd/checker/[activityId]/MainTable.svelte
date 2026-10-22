@@ -98,7 +98,7 @@
 			<td>{item.UserCode}</td>
 
 			{#if item.Faculty !== undefined && !compactTable}
-				<td class="long-ass-col"><div>{item.Faculty}</div></td>
+				<td class="long-ass-col" title={item.Faculty}><div>{item.Faculty}</div></td>
 			{/if}
 
 			<td class="min-w-32">
@@ -143,7 +143,7 @@
 				<td class="text-center">
 					<!-- Select status -->
 					<select
-						class="select select-bordered select-xs min-w-24 select-arrow"
+						class="select select-xs min-w-24 select-arrow"
 						onchange={(e) =>
 							(tableData.rows[item.index].assignedStatus = e.currentTarget.value)}
 						value={item.assignedStatus ?? ''}
@@ -160,6 +160,8 @@
 </VirtualList>
 
 <style>
+	@reference '../../../../../app.css';
+
 	:global(table) {
 		@apply w-full table table-xs;
 	}

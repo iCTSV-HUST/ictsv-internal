@@ -1,8 +1,8 @@
 <script lang="ts">
 	import toast from 'svelte-french-toast';
 
-	import IDIcon from 'lucide-svelte/icons/id-card';
-	import KeyIcon from 'lucide-svelte/icons/key-round';
+	import IDIcon from '@lucide/svelte/icons/id-card';
+	import KeyIcon from '@lucide/svelte/icons/key-round';
 	import InputLabel from './InputLabel.svelte';
 
 	const { form } = $props();

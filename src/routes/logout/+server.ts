@@ -1,4 +1,4 @@
-import { authLogout } from '$lib/server/auth/authService';
+import { authLogout } from '#lib/server/auth/authService';
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

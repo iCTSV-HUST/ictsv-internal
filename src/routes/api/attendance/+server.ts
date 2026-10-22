@@ -1,6 +1,6 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { createAttendance, getAttendancesSince } from '$lib/server/db/queries/attendances';
+import { createAttendance, getAttendancesSince } from '#lib/server/db/queries/attendances';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const since = url.searchParams.get('since');
