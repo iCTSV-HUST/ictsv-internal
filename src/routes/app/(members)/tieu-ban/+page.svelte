@@ -38,18 +38,32 @@
 		if (!res.ok) {
 			toast.error('Cập nhật thành viên thất bại');
 			console.error('Failed to update member');
+			throw new Error('Failed to update member');
 		} else {
 			toast.success('Cập nhật thành viên thành công');
 		}
+	}
+
+	import UserPlusIcon from 'lucide-svelte/icons/user-plus';
+	import BatchMemberModal from './BatchMemberModal.svelte';
+	import type { Member } from '$lib/types';
+
+	let batchModal = $state<BatchMemberModal>();
+
+	function handleMembersAdded(newMembers: Member[]) {
+		memberList = [...memberList, ...newMembers].sort(memberSort);
 	}
 
 	// import UploadCSV from './UploadCSV.svelte';
 </script>
 
 <div class="flex flex-col h-full">
-	<div class="flex gap-2">
-		<h3 class="text-bold text-2xl mb-4">Danh sách thành viên Tổ HTTK Hệ thống iCTSV</h3>
-		<!-- <UploadCSV /> -->
+	<div class="flex justify-between items-center lg:w-[85%] mx-4 mb-4">
+		<h3 class="text-bold text-2xl">Danh sách thành viên Tổ HTTK Hệ thống iCTSV</h3>
+		<button class="btn btn-primary btn-sm gap-2" onclick={() => batchModal?.open()}>
+			<UserPlusIcon class="w-4 h-4" />
+			Thêm thành viên
+		</button>
 	</div>
 
 	<div class="lg:w-[85%] border-base-content border-2 rounded-xl mx-4 overflow-x-hidden">
@@ -114,8 +128,16 @@
 							<input
 								type="checkbox"
 								class="checkbox checkbox-sm checkbox-primary px-4"
-								bind:checked={member.active}
-								onchange={() => saveMember(member.id, member.roleId, member.active)}
+								checked={member.active}
+								onchange={async (e) => {
+									const newStatus = e.currentTarget.checked;
+									member.active = newStatus;
+									try {
+										await saveMember(member.id, member.roleId, newStatus);
+									} catch {
+										member.active = !newStatus;
+									}
+								}}
 							/>
 						</td>
 					</tr>
@@ -127,4 +149,11 @@
 	<!-- {#if editingMemberIndex > -1}
 		<button class="btn btn-error">Xoá</button>
 	{/if} -->
+
+	<BatchMemberModal
+		bind:this={batchModal}
+		{departmentOptions}
+		{roleOptions}
+		onSuccess={handleMembersAdded}
+	/>
 </div>
