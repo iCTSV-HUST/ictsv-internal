@@ -1,4 +1,4 @@
-// See https://kit.svelte.dev/docs/types#app
+// See https://kit.svelte.dev/docs/types$app
 // for information about these interfaces
 import { PermissionCheckMember } from '#lib/types';
 

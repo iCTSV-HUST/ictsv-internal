@@ -1,10 +1,10 @@
 <script lang="ts">
 	import toast from 'svelte-french-toast';
-	import type { Member, RoleId } from '$lib/types';
-	import UserPlusIcon from 'lucide-svelte/icons/user-plus';
-	import Trash2Icon from 'lucide-svelte/icons/trash-2';
-	import PlusIcon from 'lucide-svelte/icons/plus';
-	import ClipboardIcon from 'lucide-svelte/icons/clipboard';
+	import type { Member, RoleId } from '#lib/types';
+	import UserPlusIcon from '@lucide/svelte/icons/user-plus';
+	import Trash2Icon from '@lucide/svelte/icons/trash-2';
+	import PlusIcon from '@lucide/svelte/icons/plus';
+	import ClipboardIcon from '@lucide/svelte/icons/clipboard';
 
 	interface Props {
 		departmentOptions: string[];

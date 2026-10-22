@@ -44,9 +44,9 @@
 		}
 	}
 
-	import UserPlusIcon from 'lucide-svelte/icons/user-plus';
+	import UserPlusIcon from '@lucide/svelte/icons/user-plus';
 	import BatchMemberModal from './BatchMemberModal.svelte';
-	import type { Member } from '$lib/types';
+	import type { Member } from '#lib/types';
 
 	let batchModal = $state<BatchMemberModal>();
 
