@@ -73,7 +73,7 @@ static/
    - Truy cập DB chỉ trong `src/lib/server/db/queries/<bảng>.ts`, dạng các hàm `async` nhỏ được export (`getX`, `createX`, `updateX`, `deleteX`), dùng `db` từ `../db` và toán tử từ `drizzle-orm`, rồi map dòng dữ liệu thành object thuần. Route và endpoint chỉ import các hàm này, không viết truy vấn trực tiếp.
    - API endpoint là `+server.ts` export `GET`/`POST`/... kiểu `RequestHandler` từ `./$types`, trả về `json(...)`, và dùng `error(400, 'Missing ...')` khi dữ liệu vào sai.
    - Dữ liệu trang lấy từ `load` trong `+page.server.ts` và `actions` cho form; kiểm tra dữ liệu bằng `zod`.
-   - Chuyển hướng kèm thông báo dùng `failMessageURL(path, message)` từ `$lib/utils`.
+   - Chuyển hướng kèm thông báo dùng `failMessageURL(path, message)` từ `#lib/utils`.
 3. **Bảng mới phải có chính sách RLS.** Mọi bảng trong `schema.ts` đều khai báo `crudPolicy({ role: editor, read: true, modify: true })` (bảng chỉ đọc dùng `modify: false`). Sao chép đúng mẫu đó.
 4. **Phân quyền tập trung** trong `navList` của `src/routes/app/+layout.server.ts`. Cùng một hàm `permission(...)` vừa ẩn mục khỏi sidebar vừa chặn truy cập trực tiếp (kiểm tra `level >= RoleLevel.X`, `departments.includes('...')`, `isActive`). Trang mới cần bảo vệ phải được thêm vào đó, và thêm icon vào `navIcons` trong `+layout.svelte` (khóa = route bỏ tiền tố `/app/`).
 5. **Đường dẫn công khai** (không cần đăng nhập) được viết cứng trong `hooks.server.ts`: `/login`, `/register`, `/logout`, `/`. Mọi đường dẫn khác cần có người dùng; `/api/*` trả 401 khi chưa đăng nhập.

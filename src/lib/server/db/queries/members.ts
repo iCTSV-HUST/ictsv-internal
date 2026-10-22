@@ -2,7 +2,7 @@ import { roleMap, type Member, type RoleId } from '#lib/types';
 import { db } from '../db';
 import { memberDepartmentsTable, membersTable } from '../schema';
 import { eq, inArray, or } from 'drizzle-orm';
-import { hashPassword } from '$lib/server/auth/password';
+import { hashPassword } from '#lib/server/auth/password';
 import { getAllDepartments } from './departments';
 
 function mapMemberRole<T extends { roleId: string }>(member: T) {
