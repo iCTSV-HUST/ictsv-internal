@@ -1,6 +1,6 @@
 import { error, json, type RequestHandler } from '@sveltejs/kit';
-import { createMembersBatch, type NewMemberInput } from '$lib/server/db/queries/members';
-import { RoleLevel, roleMap } from '$lib/types';
+import { createMembersBatch, type NewMemberInput } from '#lib/server/db/queries/members';
+import { RoleLevel, roleMap } from '#lib/types';
 import { z } from 'zod';
 
 const memberInputSchema = z.object({
