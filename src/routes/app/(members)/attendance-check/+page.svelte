@@ -4,9 +4,9 @@
 	import DepartmentDisplay from '../../DepartmentDisplay.svelte';
 
 	import { AttendanceManager } from './attendance.svelte';
-	import { download } from '$lib/utils';
+	import { download } from '#lib/utils';
 
-	import { memberSort } from '$lib/types';
+	import { memberSort } from '#lib/types';
 
 	const { data } = $props();
 	let activeMembers = $derived((data.activeMembers ?? []).slice().sort(memberSort));
@@ -52,7 +52,7 @@
 		download('attendances.csv', buffer);
 	}
 
-	import DownloadIcon from 'lucide-svelte/icons/download';
+	import DownloadIcon from '@lucide/svelte/icons/download';
 
 	const deleteButtonClass = (locked: boolean) => {
 		return locked ? 'bg-base-content/20 cursor-not-allowed' : 'hover:bg-error/50';
@@ -213,16 +213,16 @@
 		--padded-w: calc(80vw - var(--stt-w) - var(--name-w) - var(--check-w) * 4 - 4rem);
 	}
 	table tbody td {
-		border-left: 1px solid oklch(var(--b3));
-		border-bottom: 1px solid oklch(var(--b3));
+		border-left: 1px solid var(--color-base-300);
+		border-bottom: 1px solid var(--color-base-300);
 	}
 
 	table thead th {
-		border-left: 1px solid oklch(var(--nc));
+		border-left: 1px solid var(--color-neutral-content);
 	}
 
 	.name-cell {
-		border-right: 2px solid oklch(var(--nc));
+		border-right: 2px solid var(--color-neutral-content);
 
 		position: sticky;
 		left: calc(var(--stt-w) + 1rem + 1px);
@@ -261,7 +261,7 @@
 		width: calc(100% - 1rem + 1px); /* - checkbox_size + border */
 		height: 0.5rem;
 
-		background-color: oklch(var(--su));
+		background-color: var(--color-success);
 		z-index: 0;
 		pointer-events: none;
 		/* Fade out 0 second */

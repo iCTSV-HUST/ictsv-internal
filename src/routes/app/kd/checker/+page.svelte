@@ -38,14 +38,14 @@
 </script>
 
 <div class="join w-full">
-	<!--   <input class="input input-bordered join-item" placeholder="Email" />
+	<!--   <input class="input join-item" placeholder="Email" />
 	<button class="btn join-item rounded-r-full">Subscribe</button> -->
 
 	<span class="join-item bg-base-300 px-4 flex items-center whitespace-nowrap">URL ảnh</span>
 	<!-- bg-base-300 px-4 flex items-center  -->
 
 	<input
-		class="join-item input input-bordered w-80"
+		class="join-item input w-80"
 		type="text"
 		bind:value={TestURL}
 		onchange={parseTestURL}

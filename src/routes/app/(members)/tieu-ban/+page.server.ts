@@ -1,4 +1,4 @@
-import { getAllMembers } from '$lib/server/db/queries/members';
+import { getAllMembers } from '#lib/server/db/queries/members';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
