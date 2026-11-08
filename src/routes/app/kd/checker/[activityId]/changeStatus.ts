@@ -7,7 +7,12 @@ export enum Status {
 	DENIED = 0
 }
 
-export async function setStatus(mssv: string, userStatus: Status, note?: string) {
+export async function setStatus(
+	mssv: string,
+	userStatus: Status,
+	note?: string,
+	notify = true
+): Promise<boolean> {
 	const jsonStr = JSON.stringify({
 		UserCode: mssv,
 		UAStatus: userStatus,
@@ -38,16 +43,27 @@ export async function setStatus(mssv: string, userStatus: Status, note?: string)
 			const result: KDCTSVResponseType = await response.json();
 
 			if (result.RespCode == 0) {
-				toast.success('Ok!', { position: 'bottom-left' });
+				if (notify) {
+					toast.success('Ok!', { position: 'bottom-left' });
+				}
+				return true;
 			} else {
-				toast.error(result.RespText);
+				if (notify) {
+					toast.error(result.RespText);
+				}
 			}
 		} else {
-			toast.error(`Lỗi ${mssv}!`);
+			if (notify) {
+				toast.error(`Lỗi ${mssv}!`);
+			}
 		}
 	} catch (err) {
 		const e = err as Error;
 		console.error(e);
-		toast.error(e.message);
+		if (notify) {
+			toast.error(e.message);
+		}
 	}
+
+	return false;
 }

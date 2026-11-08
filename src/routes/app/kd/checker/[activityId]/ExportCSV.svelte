@@ -8,7 +8,7 @@
 
 		for (const item of tableData.displayRows) {
 			buffer += `${item.index + 1},${item.FullName},${item.UserCode},`;
-			buffer += `${StatusMap[item.UAStatus]},${item.UAStatus},${item.assignedStatus ?? 'OK'}\n`;
+			buffer += `${StatusMap[item.UAStatus]},${item.UAStatus},${item.assignedStatus ?? ''}\n`;
 		}
 
 		download('exportedData.csv', buffer);

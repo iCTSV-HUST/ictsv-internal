@@ -187,11 +187,6 @@ export class Downloader {
 					row.coords = coords;
 					row.addresses = addresses;
 					this.progress += 1;
-
-					// TODO: Should not use hard coded values here
-					if (row.coords.length == 0 && row.addresses == 'Không có checkin.') {
-						row.assignedStatus = '5. Không checkin';
-					}
 				});
 			}
 		}

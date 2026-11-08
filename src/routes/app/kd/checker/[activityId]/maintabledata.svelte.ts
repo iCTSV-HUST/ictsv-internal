@@ -105,6 +105,8 @@ export type GetAllResult = KDCTSVResponseType & {
 
 class MainTable {
 	rows = $state<Row[]>(testRows.map((r, index) => ({ ...r, index })));
+	selectedUserCodes = $state<string[]>([]);
+	selectionAnchorUserCode = '';
 	rowfocus = $state(0);
 	filter = $state({
 		max: 1,
@@ -126,6 +128,44 @@ class MainTable {
 		this.filter.min = 0;
 		this.filter.max = this.rows.length;
 		this.filter.list = [];
+		this.selectedUserCodes = [];
+		this.selectionAnchorUserCode = '';
+	}
+
+	isSelected(userCode: string) {
+		return this.selectedUserCodes.includes(userCode);
+	}
+
+	get selectedDisplayRows() {
+		return this.displayRows.filter((row) => this.isSelected(row.UserCode));
+	}
+
+	selectRow(userCode: string, event: Pick<MouseEvent, 'shiftKey' | 'ctrlKey' | 'metaKey'>) {
+		const displayedRows = this.displayRows;
+		const clickedIndex = displayedRows.findIndex((row) => row.UserCode === userCode);
+		if (clickedIndex === -1) return;
+
+		const anchorIndex = displayedRows.findIndex(
+			(row) => row.UserCode === this.selectionAnchorUserCode
+		);
+		if (event.shiftKey && anchorIndex !== -1) {
+			const start = Math.min(anchorIndex, clickedIndex);
+			const end = Math.max(anchorIndex, clickedIndex);
+			const range = displayedRows.slice(start, end + 1).map((row) => row.UserCode);
+			const selection = event.ctrlKey || event.metaKey ? this.selectedUserCodes : [];
+			this.selectedUserCodes = [...new Set([...selection, ...range])];
+			return;
+		}
+
+		this.selectionAnchorUserCode = userCode;
+		if (event.ctrlKey || event.metaKey) {
+			this.selectedUserCodes = this.isSelected(userCode)
+				? this.selectedUserCodes.filter((code) => code !== userCode)
+				: [...this.selectedUserCodes, userCode];
+			return;
+		}
+
+		this.selectedUserCodes = [userCode];
 	}
 
 	focusUp() {
