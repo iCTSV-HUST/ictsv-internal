@@ -92,6 +92,7 @@ type Row = {
 	coords?: number[][];
 	addresses?: string;
 	assignedStatus?: string;
+	assignedNote?: string;
 };
 
 import toast from 'svelte-french-toast';

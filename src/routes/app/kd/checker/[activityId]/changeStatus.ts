@@ -7,10 +7,11 @@ export enum Status {
 	DENIED = 0
 }
 
-export async function setStatus(mssv: string, userStatus: Status) {
+export async function setStatus(mssv: string, userStatus: Status, note?: string) {
 	const jsonStr = JSON.stringify({
 		UserCode: mssv,
 		UAStatus: userStatus,
+		...(note !== undefined ? { Note: note } : {}),
 
 		AId: kdData.AId,
 		TokenCode: kdData.TokenCode,

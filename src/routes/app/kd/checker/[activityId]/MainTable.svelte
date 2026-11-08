@@ -11,7 +11,15 @@
 
 	let compactTable = $state(false);
 
-	function handleKeyDown(evt: { key: string; preventDefault: () => void }) {
+	function handleKeyDown(evt: KeyboardEvent) {
+		if (
+			evt.target instanceof HTMLInputElement ||
+			evt.target instanceof HTMLSelectElement ||
+			evt.target instanceof HTMLTextAreaElement
+		) {
+			return;
+		}
+
 		// Note number
 
 		// Up, Down
@@ -51,13 +59,13 @@
 	}
 
 	const statusList = [
-		'1. Khẩu trang',
-		'2. Không mặt',
-		'3. Không/sai banner',
-		'4. Sai checkin',
-		'5. Không checkin',
-		'6. Photoshop',
-		'7. Khác'
+		'Khẩu trang',
+		'Không mặt',
+		'Không/sai banner',
+		'Sai checkin',
+		'Không checkin',
+		'Photoshop',
+		'Khác'
 	];
 </script>
 
@@ -144,8 +152,16 @@
 					<!-- Select status -->
 					<select
 						class="select select-xs min-w-24 select-arrow"
-						onchange={(e) =>
-							(tableData.rows[item.index].assignedStatus = e.currentTarget.value)}
+						onchange={(e) => {
+							const note = e.currentTarget.value;
+							tableData.rows[item.index].assignedStatus = note;
+							if (note) {
+								if (note !== 'Khác') {
+									tableData.rows[item.index].UAStatus = Status.DENIED;
+									setStatus(item.UserCode, Status.DENIED, note);
+								}
+							}
+						}}
 						value={item.assignedStatus ?? ''}
 					>
 						<option value="" selected>OK</option>
@@ -153,6 +169,23 @@
 							<option {value}>{value}</option>
 						{/each}
 					</select>
+					{#if item.assignedStatus === 'Khác'}
+						<input
+							class="input input-xs mt-1 min-w-32"
+							type="text"
+							placeholder="Nhập lý do"
+							aria-label={`Lý do từ chối cho ${item.UserCode}`}
+							value={item.assignedNote ?? ''}
+							onchange={(e) => {
+								const reason = e.currentTarget.value.trim();
+								tableData.rows[item.index].assignedNote = reason;
+								if (reason) {
+									tableData.rows[item.index].UAStatus = Status.DENIED;
+									setStatus(item.UserCode, Status.DENIED, reason);
+								}
+							}}
+						/>
+					{/if}
 				</td>
 			{/if}
 		</tr>
