@@ -1,10 +1,12 @@
 <script lang="ts">
 	import toast from 'svelte-french-toast';
+	import pAll from 'p-all';
 
 	import ImgCheckinDownloader from './ImgCheckinDownloader.svelte';
 	import ExportCSV from './ExportCSV.svelte';
 	import MainTable from './MainTable.svelte';
 	import OpenLayersMap from './OpenLayersMap.svelte';
+	import { setStatus, Status } from './changeStatus';
 
 	import BackIcon from '@lucide/svelte/icons/corner-up-left';
 
@@ -37,6 +39,34 @@
 			.split('\n') // Split by newline
 			.map((line) => line.trim()) // Trim whitespace from each line
 			.filter((line) => line); // Remove any empty lines
+	}
+
+	async function setSelectedRowsStatus(status: Status) {
+		const rows = tableData.selectedDisplayRows.filter((row) => row.UAStatus !== status);
+		if (rows.length === 0) {
+			toast.success('Những người đã chọn đang ở trạng thái này.');
+			return;
+		}
+
+		const results = await pAll(
+			rows.map((row) => async () => {
+				const succeeded = await setStatus(row.UserCode, status, undefined, false);
+				if (succeeded) {
+					row.UAStatus = status;
+				}
+				return succeeded;
+			}),
+			{ concurrency: 10 }
+		);
+
+		const updatedCount = results.filter(Boolean).length;
+		const failedCount = results.length - updatedCount;
+		if (updatedCount > 0) {
+			toast.success(`Đã cập nhật ${updatedCount} thành viên.`);
+		}
+		if (failedCount > 0) {
+			toast.error(`Cập nhật thất bại ${failedCount} thành viên.`);
+		}
 	}
 
 	let KDEditMode = $state(false);
@@ -105,14 +135,9 @@
 				onchange={(e) => {
 					tableData.filter.list = parseLines(e.currentTarget.value);
 				}}
-				placeholder="2020..."
-			></textarea>
+				placeholder="2020..."></textarea>
 		</label>
 	</div>
-
-	{#if KDEditMode}
-		<ExportCSV />
-	{/if}
 </div>
 
 <!-- Toggle flag for KD editing -->
@@ -125,8 +150,28 @@
 		Quay lại
 	</a>
 
-	<label class="flex flex-row gap-2 items-center">
-		<span class="label">Danger: </span>
-		<input type="checkbox" class="toggle toggle-error border-2" bind:checked={KDEditMode} />
-	</label>
+	<div class="flex items-center gap-2">
+		{#if KDEditMode}
+			<button
+				class="btn btn-success btn-sm"
+				disabled={tableData.selectedDisplayRows.length === 0}
+				onclick={() => setSelectedRowsStatus(Status.APPROVED)}
+			>
+				Tick đã chọn
+			</button>
+			<button
+				class="btn btn-warning btn-sm"
+				disabled={tableData.selectedDisplayRows.length === 0}
+				onclick={() => setSelectedRowsStatus(Status.PENDING)}
+			>
+				Bỏ tick đã chọn
+			</button>
+			<ExportCSV />
+		{/if}
+
+		<label class="flex flex-row gap-2 items-center">
+			<span class="label">Danger: </span>
+			<input type="checkbox" class="toggle toggle-error border-2" bind:checked={KDEditMode} />
+		</label>
+	</div>
 </div>

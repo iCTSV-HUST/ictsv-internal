@@ -11,7 +11,15 @@
 
 	let compactTable = $state(false);
 
-	function handleKeyDown(evt: { key: string; preventDefault: () => void }) {
+	function handleKeyDown(evt: KeyboardEvent) {
+		if (
+			evt.target instanceof HTMLInputElement ||
+			evt.target instanceof HTMLSelectElement ||
+			evt.target instanceof HTMLTextAreaElement
+		) {
+			return;
+		}
+
 		// Note number
 
 		// Up, Down
@@ -51,13 +59,14 @@
 	}
 
 	const statusList = [
-		'1. Khẩu trang',
-		'2. Không mặt',
-		'3. Không/sai banner',
-		'4. Sai checkin',
-		'5. Không checkin',
-		'6. Photoshop',
-		'7. Khác'
+		'Khẩu trang',
+		'Không mặt',
+		'Không/sai banner',
+		'Sai checkin',
+		'Không checkin',
+		'Photoshop',
+		'Sử dụng AI',
+		'Khác'
 	];
 </script>
 
@@ -68,6 +77,9 @@
 	{#snippet header()}
 		<thead class="sticky top-0 z-10 bg-base-300 w-full">
 			<tr>
+				{#if editable}
+					<th class="text-center">Chọn</th>
+				{/if}
 				<th class="text-center" style="border-top-left-radius: 0.25rem;">STT</th>
 				<th>Name</th>
 				<th>MSSV</th>
@@ -93,6 +105,17 @@
 			class:error-down-img={item.imageAsset === ''}
 			class:error-down-checkin={item.coords?.length == 0}
 		>
+			{#if editable}
+				<td class="text-center">
+					<input
+						type="checkbox"
+						class="checkbox checkbox-sm"
+						aria-label={`Chọn ${item.FullName}`}
+						checked={tableData.isSelected(item.UserCode)}
+						onclick={(e) => tableData.selectRow(item.UserCode, e)}
+					/>
+				</td>
+			{/if}
 			<td class="text-center">{item.index + 1}</td>
 			<td class="long-ass-col" title={item.FullName}><div>{item.FullName}</div></td>
 			<td>{item.UserCode}</td>
@@ -141,18 +164,42 @@
 				</td>
 
 				<td class="text-center">
-					<!-- Select status -->
-					<select
-						class="select select-xs min-w-24 select-arrow"
-						onchange={(e) =>
-							(tableData.rows[item.index].assignedStatus = e.currentTarget.value)}
-						value={item.assignedStatus ?? ''}
-					>
-						<option value="" selected>OK</option>
-						{#each statusList as value}
-							<option {value}>{value}</option>
-						{/each}
-					</select>
+					<div class="flex w-36 max-w-full flex-col items-stretch gap-1">
+						<select
+							class="select select-xs w-full min-w-0 select-arrow"
+							onchange={(e) => {
+								const note = e.currentTarget.value;
+								tableData.rows[item.index].assignedStatus = note;
+								if (note && note !== 'Khác') {
+									tableData.rows[item.index].UAStatus = Status.DENIED;
+									setStatus(item.UserCode, Status.DENIED, note);
+								}
+							}}
+							value={item.assignedStatus ?? ''}
+						>
+							<option value="" selected></option>
+							{#each statusList as value}
+								<option {value}>{value}</option>
+							{/each}
+						</select>
+						{#if item.assignedStatus === 'Khác'}
+							<input
+								class="input input-xs w-full min-w-0"
+								type="text"
+								placeholder="Lý do"
+								aria-label={`Lý do từ chối cho ${item.UserCode}`}
+								value={item.assignedNote ?? ''}
+								onchange={(e) => {
+									const reason = e.currentTarget.value.trim();
+									tableData.rows[item.index].assignedNote = reason;
+									if (reason) {
+										tableData.rows[item.index].UAStatus = Status.DENIED;
+										setStatus(item.UserCode, Status.DENIED, reason);
+									}
+								}}
+							/>
+						{/if}
+					</div>
 				</td>
 			{/if}
 		</tr>
