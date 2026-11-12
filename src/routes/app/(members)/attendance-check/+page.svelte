@@ -86,7 +86,7 @@
 
 	<div class="border-2 border-neutral rounded-xl mx-4 overflow-scroll">
 		<table class="table table-sm table-pin-rows border-separate border-spacing-0">
-			<thead>
+			<thead class="!z-10">
 				<tr class="text-sm bg-base-300 z-[3]">
 					<th class="stt-cell bg-base-300">STT</th>
 					<th class="name-cell bg-base-300">
@@ -217,8 +217,21 @@
 		border-bottom: 1px solid var(--color-base-300);
 	}
 
+	table thead {
+		z-index: 10;
+	}
+
 	table thead th {
+		position: sticky;
+		top: 0px;
+		z-index: 10;
+		background-color: var(--color-base-300);
 		border-left: 1px solid var(--color-neutral-content);
+	}
+
+	table thead th.stt-cell,
+	table thead th.name-cell {
+		z-index: 20;
 	}
 
 	.name-cell {

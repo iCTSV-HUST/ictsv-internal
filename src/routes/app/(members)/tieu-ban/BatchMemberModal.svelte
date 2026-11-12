@@ -28,16 +28,59 @@
 			name: '',
 			usercode: '',
 			generation: '',
-			department: departmentOptions[0] || 'Mảng Sự kiện',
+			department: '',
 			roleId: 'ctv',
 			email: ''
 		};
 	}
 
+	// để có gì viết linh tinh vẫn nhận diện được
+	const deptAliases: Record<string, string> = {
+		kd: 'Mảng Kiểm duyệt',
+		'kiểm duyệt': 'Mảng Kiểm duyệt',
+		'kiem duyet': 'Mảng Kiểm duyệt',
+		'mảng kiểm duyệt': 'Mảng Kiểm duyệt',
+		'mang kiem duyet': 'Mảng Kiểm duyệt',
+		tt: 'Mảng Truyền thông',
+		'truyền thông': 'Mảng Truyền thông',
+		'truyen thong': 'Mảng Truyền thông',
+		'mảng truyền thông': 'Mảng Truyền thông',
+		'mang truyen thong': 'Mảng Truyền thông',
+		sk: 'Mảng Sự kiện',
+		'sự kiện': 'Mảng Sự kiện',
+		'su kien': 'Mảng Sự kiện',
+		'mảng sự kiện': 'Mảng Sự kiện',
+		'mang su kien': 'Mảng Sự kiện',
+		hc: 'Mảng Hậu cần',
+		'hậu cần': 'Mảng Hậu cần',
+		'hau can': 'Mảng Hậu cần',
+		'mảng hậu cần': 'Mảng Hậu cần',
+		'mang hau can': 'Mảng Hậu cần',
+		tb: 'Tiểu ban',
+		'tiểu ban': 'Tiểu ban',
+		'tieu ban': 'Tiểu ban'
+	};
+
+	function parseDepartments(raw: string): string[] {
+		const parts = raw
+			.split(/[,;/]+/)
+			.map((s) => s.trim())
+			.filter(Boolean);
+		const result: string[] = [];
+		for (const part of parts) {
+			const exact = departmentOptions.find((d) => d.toLowerCase() === part.toLowerCase());
+			const mapped = exact || deptAliases[part.toLowerCase()];
+			if (mapped && !result.includes(mapped)) {
+				result.push(mapped);
+			}
+		}
+		return result;
+	}
+
 	let dialogEl = $state<HTMLDialogElement>();
 	let isSaving = $state(false);
 
-	let rows = $state<GridRow[]>([createEmptyRow(), createEmptyRow(), createEmptyRow()]);
+	let rows = $state<GridRow[]>([createEmptyRow()]);
 
 	export function open() {
 		dialogEl?.showModal();
@@ -66,7 +109,12 @@
 
 	function clearEmptyRows() {
 		rows = rows.filter(
-			(r) => r.name.trim() || r.usercode.trim() || r.generation.trim() || r.email.trim()
+			(r) =>
+				r.name.trim() ||
+				r.usercode.trim() ||
+				r.generation.trim() ||
+				r.department.trim() ||
+				r.email.trim()
 		);
 		if (rows.length === 0) {
 			rows.push(createEmptyRow());
@@ -74,7 +122,7 @@
 	}
 
 	function resetForm() {
-		rows = [createEmptyRow(), createEmptyRow(), createEmptyRow()];
+		rows = [createEmptyRow()];
 	}
 
 	function handlePaste(e: ClipboardEvent, startRowIndex: number = 0) {
@@ -114,9 +162,9 @@
 					roleCandidate = '';
 				}
 
-				const department = departmentOptions.includes(deptCandidate)
-					? deptCandidate
-					: departmentOptions[0] || 'Mảng Sự kiện';
+				const parsedDepts = parseDepartments(deptCandidate);
+				const department =
+					parsedDepts.length > 0 ? parsedDepts.join(', ') : deptCandidate;
 
 				const matchedRole = roleOptions.find(
 					(r) =>
@@ -137,7 +185,12 @@
 
 			// If current rows are all blank, replace entirely
 			const isCurrentAllEmpty = rows.every(
-				(r) => !r.name.trim() && !r.usercode.trim() && !r.generation.trim() && !r.email.trim()
+				(r) =>
+					!r.name.trim() &&
+					!r.usercode.trim() &&
+					!r.generation.trim() &&
+					!r.department.trim() &&
+					!r.email.trim()
 			);
 
 			if (isCurrentAllEmpty) {
@@ -157,13 +210,19 @@
 				r.usercode.trim() &&
 				r.generation.trim() &&
 				/^\d+(\.\d)?$/.test(r.generation.trim()) &&
+				parseDepartments(r.department).length > 0 &&
 				r.email.trim()
 		).length
 	);
 
 	async function handleSave() {
 		const filledRows = rows.filter(
-			(r) => r.name.trim() || r.usercode.trim() || r.generation.trim() || r.email.trim()
+			(r) =>
+				r.name.trim() ||
+				r.usercode.trim() ||
+				r.generation.trim() ||
+				r.department.trim() ||
+				r.email.trim()
 		);
 
 		if (filledRows.length === 0) {
@@ -188,6 +247,16 @@
 			}
 			if (!/^\d+(\.\d)?$/.test(r.generation.trim())) {
 				toast.error(`Dòng ${i + 1}: Gen phải là số (ví dụ: 7.0 hoặc 7)`);
+				return;
+			}
+			if (!r.department.trim()) {
+				toast.error(`Dòng ${i + 1}: Mảng không được để trống`);
+				return;
+			}
+			if (parseDepartments(r.department).length === 0) {
+				toast.error(
+					`Dòng ${i + 1}: Mảng không hợp lệ (nhập tên mảng hoặc viết tắt: KD, TT, SK, HC, TB)`
+				);
 				return;
 			}
 			if (!r.email.trim()) {
@@ -216,7 +285,7 @@
 						: `${r.generation.trim()}.0`,
 					email: r.email.trim(),
 					roleId: r.roleId as RoleId,
-					departments: [r.department]
+					departments: parseDepartments(r.department)
 				}))
 			};
 
@@ -276,20 +345,20 @@
 		</div>
 
 		<div
-			class="overflow-x-auto overflow-y-auto p-4 flex-1 bg-base-100"
+			class="overflow-x-auto overflow-y-auto px-4 pb-4 pt-0 flex-1 bg-base-100"
 			onpaste={(e) => handlePaste(e, 0)}
 		>
 			<table class="table table-xs table-pin-rows border-separate border-spacing-0 w-full">
-				<thead>
+				<thead class="sticky top-0 z-20 bg-base-300">
 					<tr class="bg-base-300 text-xs text-base-content">
-						<th class="w-10 text-center border-b border-base-300">STT</th>
-						<th class="w-44 border-b border-base-300">Họ và tên <span class="text-error">*</span></th>
-						<th class="w-32 border-b border-base-300">MSSV <span class="text-error">*</span></th>
-						<th class="w-24 border-b border-base-300">Gen <span class="text-error">*</span></th>
-						<th class="w-40 border-b border-base-300">Mảng <span class="text-error">*</span></th>
-						<th class="w-36 border-b border-base-300">Chức vụ</th>
-						<th class="w-56 border-b border-base-300">Email <span class="text-error">*</span></th>
-						<th class="w-12 text-center border-b border-base-300">Xóa</th>
+						<th class="sticky top-0 z-20 bg-base-300 w-10 text-center border-b border-base-300">STT</th>
+						<th class="sticky top-0 z-20 bg-base-300 w-44 border-b border-base-300">Họ và tên <span class="text-error">*</span></th>
+						<th class="sticky top-0 z-20 bg-base-300 w-32 border-b border-base-300">MSSV <span class="text-error">*</span></th>
+						<th class="sticky top-0 z-20 bg-base-300 w-24 border-b border-base-300">Gen <span class="text-error">*</span></th>
+						<th class="sticky top-0 z-20 bg-base-300 w-40 border-b border-base-300">Mảng <span class="text-error">*</span></th>
+						<th class="sticky top-0 z-20 bg-base-300 w-36 border-b border-base-300">Chức vụ</th>
+						<th class="sticky top-0 z-20 bg-base-300 w-56 border-b border-base-300">Email <span class="text-error">*</span></th>
+						<th class="sticky top-0 z-20 bg-base-300 w-12 text-center border-b border-base-300">Xóa</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -303,7 +372,7 @@
 							<td class="p-1 border-b border-base-300">
 								<input
 									type="text"
-									placeholder="Nguyễn Văn A"
+									placeholder="họ và tên"
 									class="input input-xs input-ghost w-full focus:input-bordered focus:bg-base-100"
 									bind:value={row.name}
 									onpaste={(e) => handlePaste(e, idx)}
@@ -314,34 +383,32 @@
 							<td class="p-1 border-b border-base-300">
 								<input
 									type="text"
-									placeholder="2023xxxx"
+									placeholder="mssv"
 									class="input input-xs input-ghost font-mono w-full focus:input-bordered focus:bg-base-100"
 									bind:value={row.usercode}
 									onpaste={(e) => handlePaste(e, idx)}
 								/>
 							</td>
 
-							<!-- Gen (Để trống tự nhập / dán) -->
 							<td class="p-1 border-b border-base-300">
 								<input
 									type="text"
-									placeholder="7.0"
+									placeholder="gen"
 									class="input input-xs input-ghost font-mono text-center w-full focus:input-bordered focus:bg-base-100"
 									bind:value={row.generation}
 									onpaste={(e) => handlePaste(e, idx)}
 								/>
 							</td>
 
-							<!-- Mảng -->
 							<td class="p-1 border-b border-base-300">
-								<select
-									class="select select-xs select-ghost w-full focus:select-bordered focus:bg-base-100"
+								<input
+									type="text"
+									list="department-suggestions"
+									placeholder="mảng"
+									class="input input-xs input-ghost w-full focus:input-bordered focus:bg-base-100"
 									bind:value={row.department}
-								>
-									{#each departmentOptions as dept}
-										<option value={dept}>{dept}</option>
-									{/each}
-								</select>
+									onpaste={(e) => handlePaste(e, idx)}
+								/>
 							</td>
 
 							<!-- Chức vụ -->
@@ -381,6 +448,11 @@
 					{/each}
 				</tbody>
 			</table>
+			<datalist id="department-suggestions">
+				{#each departmentOptions as dept}
+					<option value={dept}></option>
+				{/each}
+			</datalist>
 		</div>
 
 		

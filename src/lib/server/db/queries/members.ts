@@ -213,9 +213,41 @@ export async function getAllMembers(): Promise<Member[]> {
 	return members.map(mapMemberRoleDepartments);
 }
 
-export async function updateMember(memberId: number, roleid: RoleId, active: boolean) {
+export async function updateMember(
+	memberId: number,
+	roleid: RoleId,
+	active: boolean,
+	departments?: string[]
+) {
 	await db
 		.update(membersTable)
 		.set({ roleId: roleid, active })
 		.where(eq(membersTable.id, memberId));
+
+	if (departments !== undefined) {
+		const allDepts = await getAllDepartments();
+		const deptMap = new Map<string, number>();
+		for (const dept of allDepts) {
+			deptMap.set(dept.name, dept.id);
+		}
+
+		await db
+			.delete(memberDepartmentsTable)
+			.where(eq(memberDepartmentsTable.memberId, memberId));
+
+		const deptRows = [];
+		for (const deptName of departments) {
+			const deptId = deptMap.get(deptName);
+			if (deptId) {
+				deptRows.push({
+					memberId,
+					departmentId: deptId
+				});
+			}
+		}
+
+		if (deptRows.length > 0) {
+			await db.insert(memberDepartmentsTable).values(deptRows);
+		}
+	}
 }
