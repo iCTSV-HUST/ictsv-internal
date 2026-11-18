@@ -107,15 +107,18 @@
 		}
 	}
 
-	function clearEmptyRows() {
-		rows = rows.filter(
-			(r) =>
-				r.name.trim() ||
+	function isRowFilled(r: GridRow): boolean {
+		return Boolean(
+			r.name.trim() ||
 				r.usercode.trim() ||
 				r.generation.trim() ||
 				r.department.trim() ||
 				r.email.trim()
 		);
+	}
+
+	function clearEmptyRows() {
+		rows = rows.filter(isRowFilled);
 		if (rows.length === 0) {
 			rows.push(createEmptyRow());
 		}
@@ -184,14 +187,7 @@
 			});
 
 			// If current rows are all blank, replace entirely
-			const isCurrentAllEmpty = rows.every(
-				(r) =>
-					!r.name.trim() &&
-					!r.usercode.trim() &&
-					!r.generation.trim() &&
-					!r.department.trim() &&
-					!r.email.trim()
-			);
+			const isCurrentAllEmpty = rows.every((r) => !isRowFilled(r));
 
 			if (isCurrentAllEmpty) {
 				rows = parsedRows;
@@ -216,14 +212,7 @@
 	);
 
 	async function handleSave() {
-		const filledRows = rows.filter(
-			(r) =>
-				r.name.trim() ||
-				r.usercode.trim() ||
-				r.generation.trim() ||
-				r.department.trim() ||
-				r.email.trim()
-		);
+		const filledRows = rows.filter(isRowFilled);
 
 		if (filledRows.length === 0) {
 			toast.error('Vui lòng nhập thông tin ít nhất một thành viên');
