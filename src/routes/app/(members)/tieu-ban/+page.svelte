@@ -28,11 +28,16 @@
 		{ value: 'ctv', label: 'Cộng tác viên' }
 	];
 
-	async function saveMember(memberId: number, roleId: string, active: boolean) {
+	async function saveMember(
+		memberId: number,
+		roleId: string,
+		active: boolean,
+		departments?: string[]
+	) {
 		const res = await fetch('/api/member', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ memberId, roleId, active })
+			body: JSON.stringify({ memberId, roleId, active, departments })
 		});
 
 		if (!res.ok) {
@@ -45,7 +50,7 @@
 	}
 
 	import UserPlusIcon from '@lucide/svelte/icons/user-plus';
-	import BatchMemberModal from './BatchMemberModal.svelte';
+	import BatchMemberModal from './BatchMemberModal.svelte';	
 	import type { Member } from '#lib/types';
 
 	let batchModal = $state<BatchMemberModal>();
@@ -66,16 +71,16 @@
 		</button>
 	</div>
 
-	<div class="lg:w-[85%] border-base-content border-2 rounded-xl mx-4 overflow-x-hidden">
+	<div class="lg:w-[85%] border-base-content border-2 rounded-xl mx-4 overflow-x-hidden overflow-y-auto">
 		<table class="table table-sm table-pin-rows">
-			<thead>
+			<thead class="sticky top-0 !z-20 bg-base-300">
 				<tr class="bg-base-300 text-sm">
-					<th class="text-center">STT</th>
-					<th>Tên</th>
-					<th>Mảng</th>
-					<th>Chức vụ</th>
-					<th>Gen</th>
-					<th>Trạng thái hoạt động</th>
+					<th class="sticky top-0 z-20 bg-base-300 text-center">STT</th>
+					<th class="sticky top-0 z-20 bg-base-300">Tên</th>
+					<th class="sticky top-0 z-20 bg-base-300">Mảng</th>
+					<th class="sticky top-0 z-20 bg-base-300">Chức vụ</th>
+					<th class="sticky top-0 z-20 bg-base-300">Gen</th>
+					<th class="sticky top-0 z-20 bg-base-300">Trạng thái hoạt động</th>
 				</tr>
 			</thead>
 			<tbody class="overflow-y-scroll">
@@ -93,7 +98,12 @@
 									bind:selected={member.departments}
 									options={departmentOptions}
 									onchange={() =>
-										saveMember(member.id, member.roleId, member.active)}
+										saveMember(
+											member.id,
+											member.roleId,
+											member.active,
+											$state.snapshot(member.departments)
+										)}
 									minSelect={1}
 									outerDivClass="!py-1 !px-0 flex-1"
 									liSelectedClass="!rounded-md !py-1"

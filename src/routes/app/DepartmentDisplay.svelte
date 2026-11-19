@@ -30,7 +30,10 @@
 	}
 </script>
 
-<span class={getClass(depts[0])}>{getName(depts[0])}</span>
-{#if depts[1]}
-	<span class={getClass(depts[1])}>{getName(depts[1])}</span>
-{/if}
+<div class="inline-flex flex-wrap gap-1">
+	{#each depts as dept}
+		{#if deptMatcher[dept]}
+			<span class={getClass(dept)}>{getName(dept)}</span>
+		{/if}
+	{/each}
+</div>
