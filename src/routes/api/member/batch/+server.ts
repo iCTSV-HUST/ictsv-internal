@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const body = await request.json();
 		const parseResult = batchInputSchema.safeParse(body);
 		if (!parseResult.success) {
-			const firstError = parseResult.error.errors[0]?.message || 'Dữ liệu không hợp lệ';
+			const firstError = parseResult.error.issues[0]?.message || 'Dữ liệu không hợp lệ';
 			return error(400, firstError);
 		}
 

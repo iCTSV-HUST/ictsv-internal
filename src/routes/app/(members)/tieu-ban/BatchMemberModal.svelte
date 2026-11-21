@@ -339,15 +339,15 @@
 		>
 			<table class="table table-xs table-pin-rows border-separate border-spacing-0 w-full">
 				<thead class="sticky top-0 z-20 bg-base-300">
-					<tr class="bg-base-300 text-xs text-base-content">
-						<th class="sticky top-0 z-20 bg-base-300 w-10 text-center border-b border-base-300">STT</th>
-						<th class="sticky top-0 z-20 bg-base-300 w-44 border-b border-base-300">Họ và tên <span class="text-error">*</span></th>
-						<th class="sticky top-0 z-20 bg-base-300 w-32 border-b border-base-300">MSSV <span class="text-error">*</span></th>
-						<th class="sticky top-0 z-20 bg-base-300 w-24 border-b border-base-300">Gen <span class="text-error">*</span></th>
-						<th class="sticky top-0 z-20 bg-base-300 w-40 border-b border-base-300">Mảng <span class="text-error">*</span></th>
-						<th class="sticky top-0 z-20 bg-base-300 w-36 border-b border-base-300">Chức vụ</th>
-						<th class="sticky top-0 z-20 bg-base-300 w-56 border-b border-base-300">Email <span class="text-error">*</span></th>
-						<th class="sticky top-0 z-20 bg-base-300 w-12 text-center border-b border-base-300">Xóa</th>
+					<tr class="bg-base-300 text-xs text-base-content [&>th]:sticky [&>th]:top-0 [&>th]:z-20 [&>th]:bg-base-300 [&>th]:border-b [&>th]:border-base-300">
+						<th class="w-10 text-center">STT</th>
+						<th class="w-44">Họ và tên <span class="text-error">*</span></th>
+						<th class="w-32">MSSV <span class="text-error">*</span></th>
+						<th class="w-24">Gen <span class="text-error">*</span></th>
+						<th class="w-40">Mảng <span class="text-error">*</span></th>
+						<th class="w-36">Chức vụ</th>
+						<th class="w-56">Email <span class="text-error">*</span></th>
+						<th class="w-12 text-center">Xóa</th>
 					</tr>
 				</thead>
 				<tbody>
