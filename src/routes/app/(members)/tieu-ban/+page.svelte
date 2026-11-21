@@ -74,13 +74,13 @@
 	<div class="lg:w-[85%] border-base-content border-2 rounded-xl mx-4 overflow-x-hidden overflow-y-auto">
 		<table class="table table-sm table-pin-rows">
 			<thead class="sticky top-0 !z-20 bg-base-300">
-				<tr class="bg-base-300 text-sm">
-					<th class="sticky top-0 z-20 bg-base-300 text-center">STT</th>
-					<th class="sticky top-0 z-20 bg-base-300">Tên</th>
-					<th class="sticky top-0 z-20 bg-base-300">Mảng</th>
-					<th class="sticky top-0 z-20 bg-base-300">Chức vụ</th>
-					<th class="sticky top-0 z-20 bg-base-300">Gen</th>
-					<th class="sticky top-0 z-20 bg-base-300">Trạng thái hoạt động</th>
+				<tr class="bg-base-300 text-sm [&>th]:sticky [&>th]:top-0 [&>th]:z-20 [&>th]:bg-base-300">
+					<th class="text-center">STT</th>
+					<th>Tên</th>
+					<th>Mảng</th>
+					<th>Chức vụ</th>
+					<th>Gen</th>
+					<th>Trạng thái hoạt động</th>
 				</tr>
 			</thead>
 			<tbody class="overflow-y-scroll">
